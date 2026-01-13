@@ -2,23 +2,23 @@
 import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
 
-const FeaturedPosts: React.FC = () => {
+const UpcomingEvents: React.FC = () => {
   return (
     <section className="py-20 bg-[#f8f8f8]">
       <div className="container mx-auto px-6">
-        <h2 className="text-4xl font-black uppercase text-center mb-16">Featured Posts</h2>
-        
+        <h2 className="text-4xl font-black uppercase text-center mb-16">Upcoming Events</h2>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main Hero Featured */}
           <div className="lg:col-span-6 relative h-[600px] rounded-[40px] overflow-hidden group">
-            <img 
-              src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&q=80&w=1000" 
-              alt="Space" 
+            <img
+              src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&q=80&w=1000"
+              alt="Space"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
             <div className="absolute bottom-0 left-0 p-10 w-full">
-               <div className="flex items-center space-x-4 mb-4 text-[10px] font-bold uppercase text-white/70">
+              <div className="flex items-center space-x-4 mb-4 text-[10px] font-bold uppercase text-white/70">
                 <span className="bg-indigo-600 text-white px-2 py-1 rounded">Technology</span>
                 <span>8 min read</span>
                 <span>20 Jan, 2025</span>
@@ -107,4 +107,4 @@ const FeaturedPosts: React.FC = () => {
   );
 };
 
-export default FeaturedPosts;
+export default UpcomingEvents;

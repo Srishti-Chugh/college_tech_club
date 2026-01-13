@@ -42,14 +42,14 @@ const ARTICLES: Article[] = [
   },
 ];
 
-const FreshlyPublished: React.FC = () => {
+const FeaturedBlogs: React.FC = () => {
   return (
     <section className="py-20 bg-white">
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
           <div>
             <h2 className="text-5xl md:text-7xl font-black uppercase leading-tight">
-              FRESHLY<br />PUBLISHED
+              FEATURED<br />BLOGS
             </h2>
           </div>
           <div className="mt-6 md:mt-0 max-w-xs text-right">
@@ -67,8 +67,8 @@ const FreshlyPublished: React.FC = () => {
           {ARTICLES.map((article) => (
             <div key={article.id} className="group cursor-pointer">
               <div className="relative h-96 mb-6 overflow-hidden rounded-3xl">
-                <img 
-                  src={article.imageUrl} 
+                <img
+                  src={article.imageUrl}
                   alt={article.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
@@ -95,4 +95,4 @@ const FreshlyPublished: React.FC = () => {
   );
 };
 
-export default FreshlyPublished;
+export default FeaturedBlogs;

@@ -2,9 +2,9 @@
 import React from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import FreshlyPublished from './components/FreshlyPublished';
-import FeaturedPosts from './components/FeaturedPosts';
-import FeaturedCategories from './components/FeaturedCategories';
+import FeaturedBlogs from './components/FeaturedBlogs';
+import UpcomingEvents from './components/UpcomingEvents';
+import OurTracks from './components/OurTracks';
 import SubscriptionBanner from './components/SubscriptionBanner';
 import Footer from './components/Footer';
 
@@ -14,9 +14,9 @@ const App: React.FC = () => {
       <Navbar />
       <main>
         <Hero />
-        <FreshlyPublished />
-        <FeaturedPosts />
-        <FeaturedCategories />
+        <FeaturedBlogs />
+        <UpcomingEvents />
+        <OurTracks />
         <SubscriptionBanner />
       </main>
       <Footer />
