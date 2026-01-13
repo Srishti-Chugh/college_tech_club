@@ -4,7 +4,7 @@ import { ArrowUpRight } from 'lucide-react';
 
 const Hero: React.FC = () => {
   return (
-    <section className="relative h-[90vh] bg-black text-white pt-24 overflow-hidden flex flex-col justify-center items-center">
+    <section id="home" className="relative h-[90vh] bg-black text-white pt-24 overflow-hidden flex flex-col justify-center items-center">
       {/* Background Decorative Lines */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20" viewBox="0 0 1000 1000">
         <path d="M-100 500 C 200 100, 800 900, 1100 500" stroke="white" fill="transparent" strokeWidth="1" />
