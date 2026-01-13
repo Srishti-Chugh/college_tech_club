@@ -4,7 +4,7 @@ import { ArrowUpRight } from 'lucide-react';
 
 const UpcomingEvents: React.FC = () => {
   return (
-    <section className="py-20 bg-[#f8f8f8]">
+    <section id="events" className="py-20 bg-[#f8f8f8]">
       <div className="container mx-auto px-6">
         <h2 className="text-4xl font-black uppercase text-center mb-16">Upcoming Events</h2>
 

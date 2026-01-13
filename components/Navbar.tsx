@@ -7,9 +7,10 @@ const Navbar: React.FC = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm text-white px-6 py-4 flex items-center justify-between border-b border-white/10">
       <div className="flex items-center space-x-8">
         <div className="flex space-x-6 text-xs font-bold uppercase tracking-widest hidden md:flex">
-          <a href="#" className="hover:text-yellow-400 transition-colors">Home</a>
-          <a href="#" className="hover:text-yellow-400 transition-colors">Shop</a>
-          <a href="#" className="hover:text-yellow-400 transition-colors">Events</a>
+          <a href="#home" className="hover:text-yellow-400 transition-colors">Home</a>
+          <a href="#blogs" className="hover:text-yellow-400 transition-colors">Featured Blogs</a>
+          <a href="#events" className="hover:text-yellow-400 transition-colors">Upcoming Events</a>
+          <a href="#tracks" className="hover:text-yellow-400 transition-colors">Our Tracks</a>
         </div>
       </div>
 

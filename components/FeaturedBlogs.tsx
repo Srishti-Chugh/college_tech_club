@@ -44,7 +44,7 @@ const ARTICLES: Article[] = [
 
 const FeaturedBlogs: React.FC = () => {
   return (
-    <section className="py-20 bg-white">
+    <section id="blogs" className="py-20 bg-white">
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
           <div>
