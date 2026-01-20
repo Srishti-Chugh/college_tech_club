@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Category } from '../types';
 
 const CATEGORIES: Category[] = [
@@ -11,6 +12,14 @@ const CATEGORIES: Category[] = [
 ];
 
 const OurTracks: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleTrackClick = (name: string) => {
+    if (name === 'Development') {
+      navigate('/resources/development');
+    }
+  };
+
   return (
     <section className="py-20 bg-white">
       <div className="container mx-auto px-6">
@@ -28,7 +37,11 @@ const OurTracks: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {CATEGORIES.map((cat) => (
-            <div key={cat.id} className="relative h-80 rounded-2xl overflow-hidden group cursor-pointer shadow-xl">
+            <div
+              key={cat.id}
+              onClick={() => handleTrackClick(cat.name)}
+              className="relative h-80 rounded-2xl overflow-hidden group cursor-pointer shadow-xl transition-transform hover:-translate-y-1"
+            >
               <img
                 src={cat.imageUrl}
                 alt={cat.name}
