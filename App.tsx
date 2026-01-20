@@ -9,6 +9,7 @@ import OurTracks from './components/OurTracks';
 import SubscriptionBanner from './components/SubscriptionBanner';
 import Footer from './components/Footer';
 import DevelopmentResources from './components/DevelopmentResources';
+import CPRoadmap from './components/CPRoadmap';
 
 const Home: React.FC = () => (
   <>
@@ -28,6 +29,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/resources/development" element={<DevelopmentResources />} />
+          <Route path="/resources/cp-roadmap" element={<CPRoadmap />} />
         </Routes>
       </main>
       <Footer />

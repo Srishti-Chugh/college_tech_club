@@ -17,6 +17,8 @@ const OurTracks: React.FC = () => {
   const handleTrackClick = (name: string) => {
     if (name === 'Development') {
       navigate('/resources/development');
+    } else if (name === 'Competitive Programming') {
+      navigate('/resources/cp-roadmap');
     }
   };
 
