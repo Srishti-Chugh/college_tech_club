@@ -10,6 +10,7 @@ import SubscriptionBanner from './components/SubscriptionBanner';
 import Footer from './components/Footer';
 import DevelopmentResources from './components/DevelopmentResources';
 import CPRoadmap from './components/CPRoadmap';
+import Blog2CodePage from './components/Blog2CodePage';
 
 const Home: React.FC = () => (
   <>
@@ -30,6 +31,7 @@ const App: React.FC = () => {
           <Route path="/" element={<Home />} />
           <Route path="/resources/development" element={<DevelopmentResources />} />
           <Route path="/resources/cp-roadmap" element={<CPRoadmap />} />
+          <Route path="/ml/blog2code" element={<Blog2CodePage />} />
         </Routes>
       </main>
       <Footer />

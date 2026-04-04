@@ -19,6 +19,8 @@ const OurTracks: React.FC = () => {
       navigate('/resources/development');
     } else if (name === 'Competitive Programming') {
       navigate('/resources/cp-roadmap');
+    } else if (name === 'Machine Learning') {
+      navigate('/ml/blog2code');
     }
   };
 
