@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
@@ -11,6 +10,8 @@ import Footer from './components/Footer';
 import DevelopmentResources from './components/DevelopmentResources';
 import CPRoadmap from './components/CPRoadmap';
 import Blog2CodePage from './components/Blog2CodePage';
+import ArraysPage from './components/ArraysPage';
+import TreesPage from './components/TreesPage';
 
 const Home: React.FC = () => (
   <>
@@ -32,6 +33,8 @@ const App: React.FC = () => {
           <Route path="/resources/development" element={<DevelopmentResources />} />
           <Route path="/resources/cp-roadmap" element={<CPRoadmap />} />
           <Route path="/ml/blog2code" element={<Blog2CodePage />} />
+          <Route path="/dsa/arrays" element={<ArraysPage />} />
+          <Route path="/dsa/trees" element={<TreesPage />} />
         </Routes>
       </main>
       <Footer />
