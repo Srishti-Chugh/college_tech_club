@@ -8,10 +8,8 @@ import OurTracks from './components/OurTracks';
 import SubscriptionBanner from './components/SubscriptionBanner';
 import Footer from './components/Footer';
 import DevelopmentResources from './components/DevelopmentResources';
-import CPRoadmap from './components/CPRoadmap';
+import { CPRoadmap, ArraysPage, TreesPage, LinkedListPage, StacksQueuesPage, HeapsPage, HashTablePage, GraphsPage } from './components/CPRoadmap';
 import Blog2CodePage from './components/Blog2CodePage';
-import ArraysPage from './components/ArraysPage';
-import TreesPage from './components/TreesPage';
 
 const Home: React.FC = () => (
   <>
@@ -35,6 +33,11 @@ const App: React.FC = () => {
           <Route path="/ml/blog2code" element={<Blog2CodePage />} />
           <Route path="/dsa/arrays" element={<ArraysPage />} />
           <Route path="/dsa/trees" element={<TreesPage />} />
+          <Route path="/dsa/linked-lists" element={<LinkedListPage />} />
+          <Route path="/dsa/stacks-queues" element={<StacksQueuesPage />} />
+          <Route path="/dsa/heaps" element={<HeapsPage />} />
+          <Route path="/dsa/hash-tables" element={<HashTablePage />} />
+          <Route path="/dsa/graphs" element={<GraphsPage />} />
         </Routes>
       </main>
       <Footer />

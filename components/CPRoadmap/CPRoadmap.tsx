@@ -310,6 +310,11 @@ const TAG_STYLE: Record<string, { bg: string; color: string; label: string }> = 
 const TOPIC_ROUTES: Record<string, string> = {
     'Arrays': '/dsa/arrays',
     'Trees': '/dsa/trees',
+    'Linked Lists': '/dsa/linked-lists',
+    'Stacks & Queues': '/dsa/stacks-queues',
+    'Hash Tables': '/dsa/hash-tables',
+    'Heaps / Priority Queues': '/dsa/heaps',
+    'Graphs': '/dsa/graphs',
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────

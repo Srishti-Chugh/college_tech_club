@@ -1,0 +1,300 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   shared.css — Common styles for ALL data-structure pages in /CPRoadmap
+   Import this file at the top of each page's TSX/CSS bundle.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&family=Unbounded:wght@700;800&display=swap');
+
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ─── PLAYGROUND SECTION ───────────────────────────────────────────────────── */
+
+.pg-wrap {
+  position: relative; z-index: 2;
+  width: 100%; max-width: 900px;
+  margin-top: 2.5rem;
+  background: rgba(255,255,255,.025);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 24px; padding: 1.75rem;
+}
+
+/* Playground header row */
+.pg-hdr, .pg-header, .pg-header-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 1rem; gap: .5rem; flex-wrap: wrap;
+}
+
+.pg-title {
+  font-size: 1rem; font-weight: 600;
+  display: flex; align-items: center; gap: .6rem; flex-wrap: wrap;
+}
+
+.pg-chip, .pg-type-chip {
+  font-size: .67rem; padding: .2rem .65rem;
+  border-radius: 100px; border: 1px solid;
+  letter-spacing: .04em; transition: all .3s;
+}
+
+.pg-reset {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  color: rgba(255,255,255,.38);
+  font-family: inherit; font-size: .75rem;
+  border-radius: 8px; padding: .33rem .8rem;
+  cursor: pointer; transition: all .2s;
+}
+.pg-reset:hover { color: #fff; border-color: rgba(255,255,255,.2); }
+
+/* Type / variant toggle row */
+.pg-toggle-row, .ll-toggle-row, .hp-toggle, .ht-toggle, .sq-toggle {
+  display: flex; gap: .4rem; flex-wrap: wrap;
+  background: rgba(0,0,0,.35);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 14px; padding: .38rem;
+  margin-bottom: 1.4rem;
+}
+.pg-toggle-btn, .ll-toggle-btn, .hp-tb, .ht-tb, .sq-tb {
+  flex: 1; min-width: 110px;
+  background: transparent; border: 1px solid transparent;
+  border-radius: 10px; color: rgba(255,255,255,.35);
+  font-family: inherit; font-size: .74rem;
+  padding: .5rem .4rem; cursor: pointer;
+  transition: all .22s; text-align: center;
+}
+.pg-toggle-btn:hover, .ll-toggle-btn:hover,
+.hp-tb:hover, .ht-tb:hover, .sq-tb:hover { color: rgba(255,255,255,.65); }
+.pg-toggle-btn.active, .ll-toggle-btn.active,
+.hp-tb.active, .ht-tb.active, .sq-tb.active { font-weight: 700; }
+
+/* Visualizer box */
+.pg-viz, .pg-canvas {
+  background: rgba(0,0,0,.28);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 14px; padding: 1rem .75rem;
+  min-height: 120px; overflow-x: auto;
+  margin-bottom: 1.2rem;
+  display: flex; align-items: center;
+}
+
+/* Legend */
+.pg-legend, .pg-leg-row, .gp-legend {
+  display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+}
+.pg-leg, .pg-leg-item, .gp-leg-item {
+  display: flex; align-items: center; gap: .35rem;
+  font-size: .75rem; color: rgba(255,255,255,.4);
+  font-family: 'Fira Code', monospace;
+}
+.pg-leg-dot, .gp-leg-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+/* ─── OPERATION CARDS ─────────────────────────────────────────────────────── */
+
+.pg-ops { display: flex; flex-direction: column; gap: .5rem; margin-top: 1.2rem; }
+
+/* Generic op card (used by all pages) */
+.pg-card, .pg-op-card {
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 13px; overflow: hidden;
+  cursor: pointer; transition: border-color .2s;
+}
+.pg-card.open, .pg-op-card.active { border-color: rgba(255,255,255,.15); }
+
+/* Card header */
+.pg-ch, .pg-card-head, .pg-op-head {
+  display: flex; align-items: center; gap: .65rem;
+  padding: .78rem 1rem;
+  background: rgba(255,255,255,.025);
+}
+.pg-ci, .pg-op-icon, .pg-card-icon {
+  font-size: .9rem; width: 18px; text-align: center; flex-shrink: 0;
+}
+.pg-cn, .pg-op-name, .pg-card-name { font-weight: 600; font-size: .88rem; flex: 1; }
+
+/* Complexity badge on card header */
+.pg-op-badge, .ll-op-badge {
+  font-family: 'Fira Code', monospace; font-size: .7rem;
+  border: 1px solid; border-radius: 100px; padding: .18rem .6rem;
+}
+
+/* Chevron */
+.pg-chev, .pg-chevron {
+  color: rgba(255,255,255,.3); transition: transform .2s; flex-shrink: 0;
+}
+.pg-chev.rot, .pg-chevron.open { transform: rotate(180deg); }
+
+/* Card body */
+.pg-cb2, .pg-card-body, .pg-op-body {
+  padding: .85rem 1rem 1rem;
+  display: flex; flex-direction: column; gap: .5rem;
+  background: rgba(0,0,0,.22);
+  border-top: 1px solid rgba(255,255,255,.05);
+}
+
+/* Input row */
+.pg-row { display: flex; gap: .42rem; align-items: center; flex-wrap: wrap; }
+
+/* Text input */
+.pg-inp, .pg-input {
+  flex: 1; min-width: 80px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  color: #fff; font-family: 'Fira Code', monospace; font-size: .84rem;
+  border-radius: 9px; padding: .48rem .72rem; outline: none;
+  transition: border-color .2s;
+}
+.pg-inp.sm { flex: 0 0 90px; }
+.pg-inp:focus, .pg-input:focus { border-color: rgba(255,255,255,.28); }
+.pg-inp::placeholder, .pg-input::placeholder { color: rgba(255,255,255,.2); }
+
+/* Button */
+.pg-btn, .gp-run-btn {
+  border: none; border-radius: 9px; cursor: pointer;
+  font-family: inherit; font-weight: 600; font-size: .8rem;
+  padding: .48rem .9rem;
+  transition: opacity .15s, transform .1s;
+  white-space: nowrap;
+}
+.pg-btn:hover, .gp-run-btn:hover { opacity: .82; transform: translateY(-1px); }
+
+/* Concrete button colors (used by ArraysPage) */
+.pg-btn.green  { background: #22c55e; color: #000; }
+.pg-btn.green:hover  { background: #4ade80; }
+.pg-btn.blue   { background: #3b82f6; color: #fff; }
+.pg-btn.blue:hover   { background: #60a5fa; }
+.pg-btn.red    { background: #ef4444; color: #fff; }
+.pg-btn.red:hover    { background: #f87171; }
+.pg-btn.amber  { background: #f59e0b; color: #000; }
+.pg-btn.amber:hover  { background: #fbbf24; }
+
+/* Hint text */
+.pg-hint { font-size: .72rem; color: rgba(255,255,255,.28); line-height: 1.75; }
+
+/* ─── OPERATION LOG ───────────────────────────────────────────────────────── */
+
+.pg-log, .gp-log {
+  margin-top: 1.2rem;
+  background: rgba(0,0,0,.38);
+  border: 1px solid rgba(255,255,255,.055);
+  border-radius: 11px; padding: .7rem .9rem;
+  max-height: 150px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: .25rem;
+}
+.pg-ll, .pg-log-label, .pg-log-lbl, .gp-log-label {
+  font-size: .6rem; text-transform: uppercase; letter-spacing: .1em;
+  color: rgba(255,255,255,.2); margin-bottom: .25rem;
+  font-family: 'Fira Code', monospace;
+}
+.pg-le, .pg-log-entry, .pg-log-e, .gp-log-line {
+  font-family: 'Fira Code', monospace; font-size: .74rem;
+  display: flex; gap: .4rem; align-items: flex-start;
+  color: rgba(255,255,255,.38); line-height: 1.55;
+}
+.pg-le.success,  .pg-log-entry.success,  .pg-log-e.success,  .gp-log-line.success  { color: #4ade80; }
+.pg-le.error,    .pg-log-entry.error,    .pg-log-e.error,    .gp-log-line.error    { color: #f87171; }
+.pg-le.highlight,.pg-log-entry.highlight,.pg-log-e.highlight,.gp-log-line.step     { color: #a78bfa; }
+.pg-le.info,     .pg-log-entry.info,     .pg-log-e.info,     .gp-log-line.info     { color: rgba(255,255,255,.36); }
+.pg-le.traverse, .pg-log-entry.traverse                                             { color: #818cf8; }
+.pg-la, .pg-log-arrow, .pg-log-arr, .gp-log-arrow { opacity: .4; flex-shrink: 0; }
+
+/* ─── PROBLEMS TABLE SECTION ─────────────────────────────────────────────── */
+
+.pt-wrap {
+  position: relative; z-index: 2;
+  width: 100%; max-width: 900px; margin-top: 3rem;
+}
+
+.pt-hdr, .pt-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  flex-wrap: wrap; gap: 1rem; margin-bottom: 1.1rem;
+}
+
+.pt-title {
+  font-size: 1.15rem; font-weight: 800; letter-spacing: -.02em;
+  font-family: 'Unbounded', sans-serif;
+}
+.pt-sub {
+  font-size: .74rem; color: rgba(255,255,255,.3);
+  margin-top: .22rem; font-family: 'Fira Code', monospace;
+}
+
+/* Difficulty count pills */
+.pt-counts { display: flex; gap: .4rem; flex-wrap: wrap; align-items: center; }
+.ptc, .pt-count {
+  font-size: .71rem; font-family: 'Fira Code', monospace;
+  padding: .22rem .65rem; border-radius: 100px; border: 1px solid;
+}
+.ptc.easy,   .pt-count.easy   { color: #4ade80; background: rgba(74,222,128,.1);  border-color: rgba(74,222,128,.25); }
+.ptc.medium, .pt-count.medium { color: #fb923c; background: rgba(251,146,60,.1);  border-color: rgba(251,146,60,.25); }
+.ptc.hard,   .pt-count.hard   { color: #f87171; background: rgba(248,113,113,.1); border-color: rgba(248,113,113,.25); }
+
+/* Filter tabs */
+.pt-filters { display: flex; gap: .38rem; margin-bottom: .85rem; flex-wrap: wrap; }
+.pt-f, .pt-filter {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  color: rgba(255,255,255,.42);
+  font-family: inherit; font-size: .76rem; font-weight: 600;
+  border-radius: 9px; padding: .36rem .82rem; cursor: pointer;
+  display: flex; align-items: center; gap: .35rem;
+  transition: all .18s;
+}
+.pt-f:hover, .pt-filter:hover { color: #fff; border-color: rgba(255,255,255,.2); }
+.pt-f.active, .pt-filter.active { color: #fff; border-color: rgba(255,255,255,.26); background: rgba(255,255,255,.08); }
+.pt-f.active.easy,   .pt-filter.active.easy   { color: #4ade80; border-color: rgba(74,222,128,.38);  background: rgba(74,222,128,.08); }
+.pt-f.active.medium, .pt-filter.active.medium { color: #fb923c; border-color: rgba(251,146,60,.38);  background: rgba(251,146,60,.08); }
+.pt-f.active.hard,   .pt-filter.active.hard   { color: #f87171; border-color: rgba(248,113,113,.38); background: rgba(248,113,113,.08); }
+.pt-fc, .pt-filter-count {
+  background: rgba(255,255,255,.1); border-radius: 100px;
+  font-size: .63rem; padding: .03rem .38rem;
+}
+
+/* Table wrapper */
+.pt-tw, .pt-table-wrap {
+  border: 1px solid rgba(255,255,255,.07); border-radius: 16px; overflow: hidden;
+}
+.pt-tbl, .pt-table { width: 100%; border-collapse: collapse; }
+.pt-tbl thead tr, .pt-table thead tr {
+  background: rgba(255,255,255,.032);
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+.pt-tbl th, .pt-table th {
+  text-align: left; padding: .68rem 1rem;
+  font-size: .66rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: rgba(255,255,255,.26);
+  font-family: 'Fira Code', monospace;
+}
+.pt-row { border-bottom: 1px solid rgba(255,255,255,.042); transition: background .14s; }
+.pt-row:last-child { border-bottom: none; }
+.pt-row:hover { background: rgba(255,255,255,.025); }
+.pt-tbl td, .pt-table td { padding: .72rem 1rem; font-size: .83rem; }
+.pt-num  { color: rgba(255,255,255,.2); font-family: 'Fira Code', monospace; font-size: .72rem; width: 36px; }
+.pt-name { font-weight: 500; color: rgba(255,255,255,.83); }
+.pt-topic { color: rgba(255,255,255,.33); font-family: 'Fira Code', monospace; font-size: .73rem; }
+.pt-acc   { color: rgba(255,255,255,.3);  font-family: 'Fira Code', monospace; font-size: .73rem; }
+
+/* Difficulty badge in table */
+.pt-diff {
+  font-size: .68rem; font-weight: 700;
+  font-family: 'Fira Code', monospace;
+  padding: .18rem .58rem; border-radius: 100px; letter-spacing: .04em;
+}
+.pt-diff.easy   { color: #4ade80; background: rgba(74,222,128,.12); }
+.pt-diff.medium { color: #fb923c; background: rgba(251,146,60,.12); }
+.pt-diff.hard   { color: #f87171; background: rgba(248,113,113,.12); }
+
+/* Solve link */
+.pt-solve {
+  color: #60a5fa; font-size: .76rem;
+  font-family: 'Fira Code', monospace;
+  text-decoration: none; white-space: nowrap; transition: color .14s;
+}
+.pt-solve:hover { color: #93c5fd; }
+
+/* ─── RESPONSIVE ────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .pt-tbl th:nth-child(4), .pt-tbl td:nth-child(4),
+  .pt-table th:nth-child(4), .pt-table td:nth-child(4),
+  .pt-tbl th:nth-child(5), .pt-tbl td:nth-child(5),
+  .pt-table th:nth-child(5), .pt-table td:nth-child(5) { display: none; }
+  .pg-toggle-btn, .ll-toggle-btn, .hp-tb, .ht-tb, .sq-tb { min-width: 80px; font-size: .68rem; }
+}
