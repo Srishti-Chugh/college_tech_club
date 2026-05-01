@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './shared.css';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 interface Topic {
@@ -499,7 +500,6 @@ const CPRoadmap: React.FC = () => {
                 </div>
             )}
 
-            <style>{GLOBAL_CSS}</style>
         </div>
     );
 };
@@ -771,20 +771,5 @@ const styles: Record<string, React.CSSProperties> = {
         transition: 'all .2s',
     },
 };
-
-const GLOBAL_CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=DM+Mono:wght@400;500&display=swap');
-
-  @keyframes modalIn {
-    from { transform: scale(0.92); opacity: 0; }
-    to   { transform: scale(1);    opacity: 1; }
-  }
-
-  /* topic card hover */
-  [data-topic]:hover { transform: translateY(-2px); }
-
-  /* back button hover */
-  button[style*="Back"]:hover { color: rgba(255,255,255,0.8) !important; }
-`;
 
 export default CPRoadmap;
