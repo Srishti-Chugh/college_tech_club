@@ -50,7 +50,7 @@ const FeaturedBlogs: React.FC = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
           <div>
             <h2 className="text-5xl md:text-7xl font-black uppercase leading-tight">
-              FEATURED<br />BLOGS
+              LATEST<br />READS
             </h2>
           </div>
           <div className="mt-6 md:mt-0 max-w-xs text-right">
