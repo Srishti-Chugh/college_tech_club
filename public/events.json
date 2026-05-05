@@ -8,6 +8,7 @@
     "url": "https://codeforces.com/contests",
     "tag": "Competitive Programming",
     "highlight": false,
+    "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
     "description": "Rated round for Div. 2 participants. 5 problems, 2.5 hours. Register on Codeforces before the round starts."
   },
   {
@@ -19,6 +20,7 @@
     "url": "https://leetcode.com/contest/",
     "tag": "DSA",
     "highlight": false,
+    "image": "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=800&q=80",
     "description": "Weekly contest on LeetCode. 4 problems, 90 minutes. Good for interview prep and rating."
   },
   {
@@ -30,6 +32,7 @@
     "url": "https://hackdtu.tech",
     "tag": "Hackathon",
     "highlight": true,
+    "image": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80",
     "description": "36-hour flagship hackathon at DTU. Over ₹5L in prizes. Team of 2-4. Register before the deadline."
   },
   {
@@ -41,6 +44,7 @@
     "url": "",
     "tag": "Society",
     "highlight": true,
+    "image": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80",
     "description": "Hands-on intro to system design — scalability, databases, load balancers. Bring your laptop. Venue: CS Seminar Hall."
   },
   {
@@ -52,6 +56,7 @@
     "url": "https://icpc.global/",
     "tag": "Competitive Programming",
     "highlight": false,
+    "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=800&q=80",
     "description": "Registrations open for the ICPC Amritapuri Regional. Team of 3, university eligible. Don't miss the early bird deadline."
   },
   {
@@ -63,6 +68,7 @@
     "url": "https://leetcode.com/contest/",
     "tag": "DSA",
     "highlight": false,
+    "image": "https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=800&q=80",
     "description": "Biweekly contest on LeetCode. 4 problems, 90 minutes. Rated for all users."
   },
   {
@@ -74,6 +80,7 @@
     "url": "https://www.sih.gov.in/",
     "tag": "Hackathon",
     "highlight": false,
+    "image": "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80",
     "description": "Problem statements for SIH 2026 expected to be released. Start forming teams and identifying problem areas early."
   },
   {
@@ -85,6 +92,7 @@
     "url": "",
     "tag": "Society",
     "highlight": false,
+    "image": "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80",
     "description": "Open house for freshers and new members. Learn about our tracks — CP, ML, Development, Research. Free snacks."
   },
   {
@@ -96,6 +104,7 @@
     "url": "https://atcoder.jp/contests/",
     "tag": "Competitive Programming",
     "highlight": false,
+    "image": "https://images.unsplash.com/photo-1587620962725-abab7fe55159?auto=format&fit=crop&w=800&q=80",
     "description": "ABC round on AtCoder. Great for beginners and intermediate competitive programmers. 8 problems, 100 minutes."
   },
   {
@@ -107,6 +116,7 @@
     "url": "https://summerofcode.withgoogle.com/",
     "tag": "Open Source",
     "highlight": false,
+    "image": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80",
     "description": "Official coding period for GSoC 2026 contributors begins. Start communicating with your mentors daily."
   },
   {
@@ -118,6 +128,7 @@
     "url": "https://codeforces.com/contests",
     "tag": "Competitive Programming",
     "highlight": true,
+    "image": "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?auto=format&fit=crop&w=800&q=80",
     "description": "Combined Div. 1 + Div. 2 round on Codeforces. Higher difficulty, more rating points on the line."
   },
   {
@@ -129,6 +140,7 @@
     "url": "",
     "tag": "Society",
     "highlight": true,
+    "image": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=800&q=80",
     "description": "Members present their ML projects — from image classifiers to LLM fine-tuning. Open to all. Venue: Main Auditorium."
   }
 ]

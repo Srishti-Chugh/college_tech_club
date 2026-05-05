@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft, ExternalLink, Calendar, Search, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Calendar, Search, ChevronDown, ChevronUp, Clock, ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface Event {
@@ -11,6 +11,7 @@ interface Event {
     url: string;
     tag: string;
     highlight: boolean;
+    image?: string;
     description: string;
 }
 
@@ -42,21 +43,112 @@ function groupByMonth(events: Event[]): [string, Event[]][] {
     return Object.entries(map);
 }
 
-const TYPE_CARD_STYLE: Record<string, { bg: string; text: string }> = {
-    'Contest': { bg: '#000', text: '#facc15' },
+// Fallback images — used only when no "image" field in events.json
+const FALLBACK_IMAGES: Record<string, string> = {
+    'Contest': 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
+    'Hackathon': 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80',
+    'Society Event': 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80',
+    'Deadline': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80',
+};
+
+function getImage(event: Event): string {
+    return event.image || FALLBACK_IMAGES[event.type] || FALLBACK_IMAGES['Contest'];
+}
+
+// Accent colours per type
+const TYPE_ACCENT: Record<string, { bg: string; text: string }> = {
+    'Contest': { bg: '#4f46e5', text: '#fff' },
     'Hackathon': { bg: '#facc15', text: '#000' },
-    'Society Event': { bg: '#000', text: '#fff' },
-    'Deadline': { bg: '#f5f5f5', text: '#000' },
+    'Society Event': { bg: '#fff', text: '#000' },
+    'Deadline': { bg: '#000', text: '#facc15' },
 };
 
-const TAG_DOT: Record<string, string> = {
-    'Competitive Programming': '#facc15',
-    'DSA': '#facc15',
-    'Hackathon': '#facc15',
-    'Society': '#000',
-    'Open Source': '#a3a3a3',
+// ─── Event Card ───────────────────────────────────────────────────────────────
+const EventCard: React.FC<{ event: Event; past?: boolean }> = ({ event, past = false }) => {
+    const accent = TYPE_ACCENT[event.type] ?? TYPE_ACCENT['Contest'];
+    const { day, month, weekday } = formatDate(event.date);
+    const days = daysUntil(event.date);
+
+    return (
+        <div
+            className={`rounded-2xl overflow-hidden shadow-sm cursor-pointer group transition-all duration-300 bg-white ${past ? '' : 'hover:-translate-y-1 hover:shadow-xl'}`}
+            style={{ borderLeft: event.highlight ? '3px solid #facc15' : '3px solid transparent' }}
+            onClick={() => !past && event.url && window.open(event.url, '_blank')}
+        >
+            {/* Image banner — same as UpcomingEvents cards */}
+            <div className="relative h-40 overflow-hidden">
+                <img
+                    src={getImage(event)}
+                    alt={event.title}
+                    className={`w-full h-full object-cover transition-transform duration-500 ${past ? '' : 'group-hover:scale-105'}`}
+                    style={{ filter: past ? 'grayscale(60%) brightness(0.7)' : undefined }}
+                />
+                {/* Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+                {/* Type badge — top left over image */}
+                <span
+                    className="absolute top-3 left-3 text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full"
+                    style={{ background: accent.bg, color: accent.text }}
+                >
+                    {event.type}
+                </span>
+
+                {/* Date — top right over image */}
+                <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-black/40 backdrop-blur-sm px-2.5 py-1 rounded-full">
+                    <Clock size={9} className="text-white/70" />
+                    <span className="text-[9px] font-black uppercase tracking-widest text-white/90">
+                        {weekday} · {day} {month}
+                    </span>
+                </div>
+
+                {/* Urgency — bottom left over image */}
+                <div className="absolute bottom-3 left-3">
+                    {!past && days === 0 && <span className="text-[9px] font-black uppercase tracking-widest text-yellow-400">● Today</span>}
+                    {!past && days === 1 && <span className="text-[9px] font-black uppercase tracking-widest text-yellow-400">● Tomorrow</span>}
+                    {!past && days > 1 && days <= 7 && <span className="text-[9px] font-black uppercase tracking-widest text-white/60">● In {days} days</span>}
+                    {past && <span className="text-[9px] font-black uppercase tracking-widest text-white/40">● Past</span>}
+                </div>
+            </div>
+
+            {/* Card body */}
+            <div className="p-5">
+                {/* Tag dot row */}
+                <div className="flex items-center gap-1.5 mb-2">
+                    <span
+                        className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                        style={{ background: accent.bg === '#fff' ? '#000' : accent.bg }}
+                    />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-black/30">{event.tag}</span>
+                </div>
+
+                {/* Title */}
+                <h3 className={`text-sm font-black uppercase tracking-tight leading-snug mb-3 transition-colors line-clamp-2 ${past ? 'text-black/40' : 'text-black group-hover:text-indigo-600'}`}>
+                    {event.title}
+                </h3>
+
+                {/* Description */}
+                <p className="text-xs text-black/40 leading-relaxed line-clamp-2 mb-4">
+                    {event.description}
+                </p>
+
+                {/* Bottom row */}
+                <div className="flex items-center justify-between pt-3 border-t border-black/06">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-black/25">{event.time}</span>
+
+                    {!past && event.url && (
+                        <div className="flex items-center gap-1.5 bg-black/05 px-3 py-1.5 rounded-full group-hover:bg-black group-hover:text-white transition-all">
+                            <ExternalLink size={10} className="text-black/30 group-hover:text-white transition-colors" />
+                            <span className="text-[9px] font-black uppercase tracking-widest text-black/30 group-hover:text-white transition-colors">Open</span>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
 };
 
+// ─── Page ─────────────────────────────────────────────────────────────────────
 const EventsPage: React.FC = () => {
     const [allEvents, setAllEvents] = useState<Event[]>([]);
     const [filter, setFilter] = useState<FilterType>('All');
@@ -69,9 +161,7 @@ const EventsPage: React.FC = () => {
         fetch('/events.json')
             .then(r => r.json())
             .then((data: Event[]) => {
-                setAllEvents(
-                    [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                );
+                setAllEvents([...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()));
                 setLoading(false);
             })
             .catch(() => setLoading(false));
@@ -105,7 +195,7 @@ const EventsPage: React.FC = () => {
     return (
         <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', sans-serif" }}>
 
-            {/* ── HERO — black magazine header ─────────────────────────────────── */}
+            {/* ── HERO ── */}
             <header className="bg-black text-white pt-32 pb-20 px-6">
                 <div className="container mx-auto max-w-6xl">
                     <Link
@@ -121,7 +211,7 @@ const EventsPage: React.FC = () => {
 
                     <h1 className="text-6xl md:text-8xl font-black uppercase leading-none tracking-tight mb-6">
                         On Our{' '}
-                        <span className="outline-text" style={{ WebkitTextStroke: '1px rgba(255,255,255,0.2)', color: 'transparent' }}>
+                        <span style={{ WebkitTextStroke: '1px rgba(255,255,255,0.2)', color: 'transparent' }}>
                             Radar
                         </span>
                     </h1>
@@ -130,7 +220,6 @@ const EventsPage: React.FC = () => {
                         Contests, hackathons, society workshops and key deadlines — everything worth marking in your calendar, curated weekly.
                     </p>
 
-                    {/* Stats */}
                     <div className="flex gap-10 flex-wrap">
                         {[
                             { label: 'Upcoming', val: upcoming.length },
@@ -147,23 +236,16 @@ const EventsPage: React.FC = () => {
                 </div>
             </header>
 
-            {/* ── STICKY FILTER BAR ────────────────────────────────────────────── */}
+            {/* ── STICKY FILTER BAR ── */}
             <div className="sticky top-0 z-40 bg-white border-b-4 border-black">
                 <div className="container mx-auto max-w-6xl px-6 py-3 flex items-center gap-3 flex-wrap">
-
-                    {/* Filter pills */}
                     <div className="flex gap-2 flex-wrap flex-1">
                         {(['All', 'Contest', 'Hackathon', 'Society Event', 'Deadline'] as FilterType[]).map(f => (
                             <button
                                 key={f}
                                 onClick={() => setFilter(f)}
-                                className={`
-                  flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border-2 transition-all
-                  ${filter === f
-                                        ? 'bg-black text-white border-black'
-                                        : 'bg-white text-black/40 border-black/15 hover:border-black/40 hover:text-black'
-                                    }
-                `}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border-2 transition-all
+                  ${filter === f ? 'bg-black text-white border-black' : 'bg-white text-black/40 border-black/15 hover:border-black/40 hover:text-black'}`}
                             >
                                 {f}
                                 <span className={`text-[9px] px-1.5 py-px rounded-full ${filter === f ? 'bg-white/15 text-white' : 'bg-black/07 text-black/40'}`}>
@@ -172,8 +254,6 @@ const EventsPage: React.FC = () => {
                             </button>
                         ))}
                     </div>
-
-                    {/* Search */}
                     <div className="relative">
                         <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-black/30" />
                         <input
@@ -186,7 +266,7 @@ const EventsPage: React.FC = () => {
                 </div>
             </div>
 
-            {/* ── MAIN CONTENT ─────────────────────────────────────────────────── */}
+            {/* ── MAIN ── */}
             <main className="container mx-auto max-w-6xl px-6 py-14 pb-24">
 
                 {loading && (
@@ -206,86 +286,22 @@ const EventsPage: React.FC = () => {
                 {/* Grouped by month */}
                 {grouped.map(([month, monthEvents]) => (
                     <div key={month} className="mb-14">
-
-                        {/* Month heading — section divider style */}
-                        <div className="flex items-baseline justify-between border-b-4 border-black pb-3 mb-6">
-                            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight leading-none">
-                                {month}
-                            </h2>
+                        <div className="flex items-baseline justify-between border-b-4 border-black pb-3 mb-8">
+                            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight leading-none">{month}</h2>
                             <span className="text-[10px] font-black uppercase tracking-widest text-black/25">
                                 {monthEvents.length} event{monthEvents.length !== 1 ? 's' : ''}
                             </span>
                         </div>
 
-                        {/* Event cards — black card grid matching homepage cards */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                            {monthEvents.map(event => {
-                                const { day, month: mon, weekday } = formatDate(event.date);
-                                const days = daysUntil(event.date);
-                                const badge = TYPE_CARD_STYLE[event.type] ?? { bg: '#f5f5f5', text: '#000' };
-                                const dotColor = TAG_DOT[event.tag] ?? '#a3a3a3';
-
-                                return (
-                                    <div
-                                        key={event.id}
-                                        className="bg-black text-white rounded-2xl p-6 shadow-xl flex flex-col justify-between group cursor-pointer hover:-translate-y-1 transition-transform duration-300"
-                                        style={{ borderLeft: event.highlight ? '3px solid #facc15' : '3px solid transparent' }}
-                                        onClick={() => event.url && window.open(event.url, '_blank')}
-                                    >
-                                        {/* Date + badge */}
-                                        <div className="flex items-start justify-between mb-4">
-                                            <div className="flex flex-col">
-                                                <span className="text-white/30 text-[10px] font-black uppercase tracking-widest">{weekday}</span>
-                                                <span className="text-4xl font-black leading-none tracking-tight">{day}</span>
-                                                <span className="text-white/50 text-[10px] font-black uppercase tracking-widest mt-0.5">{mon}</span>
-                                            </div>
-                                            <span
-                                                className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full"
-                                                style={{ background: badge.bg, color: badge.text }}
-                                            >
-                                                {event.type}
-                                            </span>
-                                        </div>
-
-                                        {/* Title + desc */}
-                                        <div className="flex-1">
-                                            <h3 className="text-lg font-black uppercase tracking-tight leading-snug mb-2 group-hover:text-yellow-400 transition-colors">
-                                                {event.title}
-                                            </h3>
-                                            <p className="text-white/40 text-sm font-medium leading-relaxed line-clamp-2">
-                                                {event.description}
-                                            </p>
-                                        </div>
-
-                                        {/* Tag dot */}
-                                        <div className="flex items-center gap-1.5 mt-3">
-                                            <span className="w-1.5 h-1.5 rounded-full" style={{ background: dotColor }} />
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-white/30">{event.tag}</span>
-                                        </div>
-
-                                        {/* Bottom row */}
-                                        <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
-                                            <div>
-                                                <span className="text-white/30 text-[10px] font-black uppercase tracking-widest">{event.time}</span>
-                                                {days === 0 && <div className="text-yellow-400 text-[10px] font-black uppercase tracking-widest">Today</div>}
-                                                {days === 1 && <div className="text-yellow-400 text-[10px] font-black uppercase tracking-widest">Tomorrow</div>}
-                                                {days > 1 && days <= 7 && <div className="text-white/40 text-[10px] font-black uppercase tracking-widest">in {days} days</div>}
-                                            </div>
-                                            {event.url && (
-                                                <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-full group-hover:bg-yellow-400 group-hover:text-black transition-all">
-                                                    <ExternalLink size={11} className="text-white/30 group-hover:text-black transition-colors" />
-                                                    <span className="text-[10px] font-black uppercase tracking-widest text-white/30 group-hover:text-black transition-colors">Open</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                            {monthEvents.map(event => (
+                                <EventCard key={event.id} event={event} />
+                            ))}
                         </div>
                     </div>
                 ))}
 
-                {/* ── Past events ────────────────────────────────────────────────── */}
+                {/* Past events */}
                 {past.length > 0 && (
                     <div className="mt-8 border-t-2 border-black/08 pt-8">
                         <button
@@ -297,38 +313,24 @@ const EventsPage: React.FC = () => {
                         </button>
 
                         {showPast && (
-                            <div className="opacity-40 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                                {filteredPast.map(event => {
-                                    const { day, month: mon, weekday } = formatDate(event.date);
-                                    const badge = TYPE_CARD_STYLE[event.type] ?? { bg: '#f5f5f5', text: '#000' };
-                                    return (
-                                        <div key={event.id} className="bg-black text-white rounded-2xl p-6 shadow-xl flex flex-col justify-between">
-                                            <div className="flex items-start justify-between mb-4">
-                                                <div className="flex flex-col">
-                                                    <span className="text-white/30 text-[10px] font-black uppercase tracking-widest">{weekday}</span>
-                                                    <span className="text-4xl font-black leading-none tracking-tight line-through decoration-white/30">{day}</span>
-                                                    <span className="text-white/50 text-[10px] font-black uppercase tracking-widest mt-0.5">{mon}</span>
-                                                </div>
-                                                <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full" style={{ background: badge.bg, color: badge.text }}>
-                                                    {event.type}
-                                                </span>
-                                            </div>
-                                            <h3 className="text-lg font-black uppercase tracking-tight leading-snug">{event.title}</h3>
-                                        </div>
-                                    );
-                                })}
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                                {filteredPast.map(event => (
+                                    <EventCard key={event.id} event={event} past />
+                                ))}
                             </div>
                         )}
                     </div>
                 )}
 
-                {/* ── Manager note ─────────────────────────────────────────────────── */}
+                {/* Manager note */}
                 <div className="mt-16 p-6 bg-neutral-50 border-2 border-black/06 rounded-2xl">
                     <p className="text-[10px] font-black uppercase tracking-widest text-black/30 mb-1">Website Managers</p>
                     <p className="text-sm font-medium text-black/50 leading-relaxed">
                         To update events, edit{' '}
-                        <code className="bg-black/06 px-1.5 py-0.5 rounded text-xs font-mono">public/events.json</code>{' '}
-                        and push to GitHub. No code changes needed — the site redeploys automatically.
+                        <code className="bg-black/06 px-1.5 py-0.5 rounded text-xs font-mono">public/events.json</code>.
+                        Add an <code className="bg-black/06 px-1.5 py-0.5 rounded text-xs font-mono">"image"</code> field
+                        with any image URL to set a custom cover photo. If omitted, a default image for that event type is used automatically.
+                        No code changes needed — the site redeploys automatically.
                     </p>
                 </div>
             </main>
