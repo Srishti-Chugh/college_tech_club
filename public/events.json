@@ -1,0 +1,134 @@
+[
+  {
+    "id": 1,
+    "title": "Codeforces Round #1020 (Div. 2)",
+    "type": "Contest",
+    "date": "2026-05-10",
+    "time": "20:35 IST",
+    "url": "https://codeforces.com/contests",
+    "tag": "Competitive Programming",
+    "highlight": false,
+    "description": "Rated round for Div. 2 participants. 5 problems, 2.5 hours. Register on Codeforces before the round starts."
+  },
+  {
+    "id": 2,
+    "title": "LeetCode Weekly Contest 452",
+    "type": "Contest",
+    "date": "2026-05-11",
+    "time": "08:00 IST",
+    "url": "https://leetcode.com/contest/",
+    "tag": "DSA",
+    "highlight": false,
+    "description": "Weekly contest on LeetCode. 4 problems, 90 minutes. Good for interview prep and rating."
+  },
+  {
+    "id": 3,
+    "title": "HackDTU 2026 — Registration Deadline",
+    "type": "Hackathon",
+    "date": "2026-05-14",
+    "time": "23:59 IST",
+    "url": "https://hackdtu.tech",
+    "tag": "Hackathon",
+    "highlight": true,
+    "description": "36-hour flagship hackathon at DTU. Over ₹5L in prizes. Team of 2-4. Register before the deadline."
+  },
+  {
+    "id": 4,
+    "title": "Tech Club Workshop: System Design 101",
+    "type": "Society Event",
+    "date": "2026-05-17",
+    "time": "18:00 IST",
+    "url": "",
+    "tag": "Society",
+    "highlight": true,
+    "description": "Hands-on intro to system design — scalability, databases, load balancers. Bring your laptop. Venue: CS Seminar Hall."
+  },
+  {
+    "id": 5,
+    "title": "ICPC Asia Regional — Amritapuri Site",
+    "type": "Contest",
+    "date": "2026-05-20",
+    "time": "Registration Open",
+    "url": "https://icpc.global/",
+    "tag": "Competitive Programming",
+    "highlight": false,
+    "description": "Registrations open for the ICPC Amritapuri Regional. Team of 3, university eligible. Don't miss the early bird deadline."
+  },
+  {
+    "id": 6,
+    "title": "LeetCode Biweekly Contest 160",
+    "type": "Contest",
+    "date": "2026-05-23",
+    "time": "20:00 IST",
+    "url": "https://leetcode.com/contest/",
+    "tag": "DSA",
+    "highlight": false,
+    "description": "Biweekly contest on LeetCode. 4 problems, 90 minutes. Rated for all users."
+  },
+  {
+    "id": 7,
+    "title": "Smart India Hackathon — PS Release",
+    "type": "Hackathon",
+    "date": "2026-05-25",
+    "time": "All Day",
+    "url": "https://www.sih.gov.in/",
+    "tag": "Hackathon",
+    "highlight": false,
+    "description": "Problem statements for SIH 2026 expected to be released. Start forming teams and identifying problem areas early."
+  },
+  {
+    "id": 8,
+    "title": "Tech Club Open House",
+    "type": "Society Event",
+    "date": "2026-05-28",
+    "time": "16:00 IST",
+    "url": "",
+    "tag": "Society",
+    "highlight": false,
+    "description": "Open house for freshers and new members. Learn about our tracks — CP, ML, Development, Research. Free snacks."
+  },
+  {
+    "id": 9,
+    "title": "AtCoder Beginner Contest 410",
+    "type": "Contest",
+    "date": "2026-05-30",
+    "time": "18:30 IST",
+    "url": "https://atcoder.jp/contests/",
+    "tag": "Competitive Programming",
+    "highlight": false,
+    "description": "ABC round on AtCoder. Great for beginners and intermediate competitive programmers. 8 problems, 100 minutes."
+  },
+  {
+    "id": 10,
+    "title": "Google Summer of Code — Coding Period Begins",
+    "type": "Deadline",
+    "date": "2026-06-02",
+    "time": "All Day",
+    "url": "https://summerofcode.withgoogle.com/",
+    "tag": "Open Source",
+    "highlight": false,
+    "description": "Official coding period for GSoC 2026 contributors begins. Start communicating with your mentors daily."
+  },
+  {
+    "id": 11,
+    "title": "Codeforces Round #1025 (Div. 1 + 2)",
+    "type": "Contest",
+    "date": "2026-06-07",
+    "time": "19:35 IST",
+    "url": "https://codeforces.com/contests",
+    "tag": "Competitive Programming",
+    "highlight": true,
+    "description": "Combined Div. 1 + Div. 2 round on Codeforces. Higher difficulty, more rating points on the line."
+  },
+  {
+    "id": 12,
+    "title": "Tech Club ML Showcase",
+    "type": "Society Event",
+    "date": "2026-06-12",
+    "time": "17:00 IST",
+    "url": "",
+    "tag": "Society",
+    "highlight": true,
+    "description": "Members present their ML projects — from image classifiers to LLM fine-tuning. Open to all. Venue: Main Auditorium."
+  }
+]
