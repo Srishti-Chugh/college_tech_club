@@ -15,10 +15,10 @@ const Navbar: React.FC = () => {
       </div>
 
       <div className="absolute left-1/2 -translate-x-1/2 flex items-center space-x-2">
-        <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center">
-          <span className="text-black font-black text-xl">G</span>
+        <div className="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center">
+          <span className="text-white font-black text-sm font-mono">{'{ }'}</span>
         </div>
-        <span className="font-black text-xl tracking-tighter">GLOBALY</span>
+        <span className="font-black text-xl tracking-tighter">theByteLab</span>
       </div>
 
       <div className="flex items-center space-x-6">

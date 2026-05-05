@@ -269,7 +269,7 @@ const TrackBanner: React.FC = () => (
       <div className="ml-banner-left">
         <div className="ml-banner-eyebrow">
           <span className="ml-banner-dot" />
-          GLOBALY · ML TRACK
+          theByteLab · ML TRACK
         </div>
         <h2 className="ml-banner-title">
           Machine<br />

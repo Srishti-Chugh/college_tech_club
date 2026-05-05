@@ -1,12 +1,12 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   shared.css  —  GLOBALY MAGAZINE × CPROADMAP
+   shared.css  —  theByteLab × CPROADMAP
    Single stylesheet for ALL pages in /components/cproadmap/
    Import once at top of each TSX file:  import './shared.css';
    Then DELETE the `const CSS = \`...\`` block and <style>{CSS}</style> tag.
 
    DESIGN PHILOSOPHY
    ─────────────────
-   The homepage (Globaly Magazine) establishes these tokens:
+   The homepage (theByteLab) establishes these tokens:
      • Yellow accent  : #facc15  (Tailwind yellow-400)
      • Near-black base: #09090b
      • Indigo tag pop : #4f46e5  (Tailwind indigo-600)
