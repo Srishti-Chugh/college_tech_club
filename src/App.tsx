@@ -11,6 +11,7 @@ import DevelopmentResources from './components/DevelopmentResources';
 import { CPRoadmap, ArraysPage, TreesPage, LinkedListPage, StacksQueuesPage, HeapsPage, HashTablePage, GraphsPage } from './components/CPRoadmap';
 import Blog2CodePage from './components/Blog2CodePage';
 import EventsPage from './components/EventsPage';
+import ExplorePage from './components/ExplorePage';
 
 const Home: React.FC = () => (
   <>
@@ -30,7 +31,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/events" element={<EventsPage />} />
-          <Route path="/events" element={<EventsPage />} />
+          <Route path="/explore" element={<ExplorePage />} />
           <Route path="/resources/development" element={<DevelopmentResources />} />
           <Route path="/resources/cp-roadmap" element={<CPRoadmap />} />
           <Route path="/ml/blog2code" element={<Blog2CodePage />} />

@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { ArrowUpRight, Clock, Calendar } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Article } from '../types';
 
 const ARTICLES: Article[] = [
@@ -54,12 +55,12 @@ const FeaturedBlogs: React.FC = () => {
           </div>
           <div className="mt-6 md:mt-0 max-w-xs text-right">
             <p className="text-sm font-medium mb-4">For readers focused on staying at the forefront of progress</p>
-            <button className="group flex items-center space-x-2 border border-black/20 rounded-full pl-6 pr-2 py-2 hover:bg-black hover:text-white transition-all">
-              <span className="text-xs font-bold uppercase">View All Articles</span>
+            <Link to="/explore" className="group flex items-center space-x-2 border border-black/20 rounded-full pl-6 pr-2 py-2 hover:bg-black hover:text-white transition-all">
+              <span className="text-xs font-bold uppercase">Explore</span>
               <div className="bg-black text-white p-2 rounded-full group-hover:bg-white group-hover:text-black transition-colors">
                 <ArrowUpRight size={16} />
               </div>
-            </button>
+            </Link>
           </div>
         </div>
 
