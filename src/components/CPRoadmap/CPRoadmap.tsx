@@ -338,51 +338,51 @@ const CPRoadmap: React.FC = () => {
 
     return (
         <div style={styles.root}>
-            {/* ambient bg */}
-            <div style={styles.bgWrap} aria-hidden>
-                <div style={{ ...styles.orb, ...styles.orb1 }} />
-                <div style={{ ...styles.orb, ...styles.orb2 }} />
-                <div style={styles.gridOverlay} />
+            {/* White hero section */}
+            <div style={styles.heroWrap}>
+                <button onClick={() => navigate('/')} style={styles.backBtn}>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
+                    Back
+                </button>
+
+                <header style={styles.header}>
+                    <div style={styles.badge}>Competitive Programming · DSA Roadmap</div>
+                    <h1 style={styles.title}>
+                        Data Structures<br />
+                        <span style={styles.titleAccent}>&amp; Algorithms</span>
+                    </h1>
+                    <p style={styles.subtitle}>
+                        A complete, structured path from fundamentals to competitive programming mastery.<br />
+                        Click any topic to explore resources and mark your progress.
+                    </p>
+
+                    <div style={styles.progressWrap}>
+                        <div style={styles.progressBar}>
+                            <div style={{ ...styles.progressFill, width: `${progress}%` }} />
+                        </div>
+                        <span style={styles.progressLabel}>{completedIds.size} / {totalTopics} topics completed</span>
+                    </div>
+
+                    <div style={styles.legend}>
+                        {Object.entries(TAG_STYLE).map(([key, val]) => (
+                            <span key={key} style={{ ...styles.legendItem, background: val.bg, color: val.color }}>
+                                {val.label}
+                            </span>
+                        ))}
+                    </div>
+                </header>
             </div>
 
-            {/* back */}
-            <button onClick={() => navigate('/')} style={styles.backBtn}>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
-                Back
-            </button>
-
-            {/* header */}
-            <header style={styles.header}>
-                <div style={styles.badge}>Competitive Programming · DSA Roadmap</div>
-                <h1 style={styles.title}>
-                    Data Structures<br />
-                    <span style={styles.titleAccent}>&amp; Algorithms</span>
-                </h1>
-                <p style={styles.subtitle}>
-                    A complete, structured path from fundamentals to competitive programming mastery.<br />
-                    Click any topic to explore resources and mark your progress.
-                </p>
-
-                {/* progress bar */}
-                <div style={styles.progressWrap}>
-                    <div style={styles.progressBar}>
-                        <div style={{ ...styles.progressFill, width: `${progress}%` }} />
-                    </div>
-                    <span style={styles.progressLabel}>{completedIds.size} / {totalTopics} topics completed</span>
+            {/* Dark content section */}
+            <div style={styles.darkSection}>
+                {/* ambient bg */}
+                <div style={styles.bgWrap} aria-hidden>
+                    <div style={{ ...styles.orb, ...styles.orb1 }} />
+                    <div style={{ ...styles.orb, ...styles.orb2 }} />
+                    <div style={styles.gridOverlay} />
                 </div>
 
-                {/* legend */}
-                <div style={styles.legend}>
-                    {Object.entries(TAG_STYLE).map(([key, val]) => (
-                        <span key={key} style={{ ...styles.legendItem, background: val.bg, color: val.color }}>
-                            {val.label}
-                        </span>
-                    ))}
-                </div>
-            </header>
-
-            {/* roadmap sections */}
-            <main style={styles.main}>
+                <main style={styles.main}>
                 {ROADMAP.map((section, si) => (
                     <section key={section.id} style={styles.section}>
                         {/* connector line from previous */}
@@ -445,6 +445,7 @@ const CPRoadmap: React.FC = () => {
                     </section>
                 ))}
             </main>
+            </div>
 
             {/* ── Modal ── */}
             {activeTopic && (
@@ -508,9 +509,29 @@ const CPRoadmap: React.FC = () => {
 const styles: Record<string, React.CSSProperties> = {
     root: {
         minHeight: '100vh',
+        background: '#fff',
+        fontFamily: "'DM Sans', sans-serif",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        position: 'relative',
+        overflowX: 'hidden',
+    },
+    heroWrap: {
+        width: '100%',
+        background: '#fff',
+        color: '#000',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '0 1.25rem 3rem',
+        position: 'relative',
+        zIndex: 1,
+    },
+    darkSection: {
+        width: '100%',
         background: '#0a0a0f',
         color: 'rgba(255,255,255,0.92)',
-        fontFamily: "'DM Sans', sans-serif",
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -519,7 +540,7 @@ const styles: Record<string, React.CSSProperties> = {
         overflowX: 'hidden',
     },
     bgWrap: {
-        position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0,
+        position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden',
     },
     orb: {
         position: 'absolute', borderRadius: '50%', filter: 'blur(100px)', opacity: 0.12,
@@ -540,7 +561,7 @@ const styles: Record<string, React.CSSProperties> = {
         alignSelf: 'flex-start',
         display: 'flex', alignItems: 'center', gap: '.4rem',
         background: 'transparent', border: 'none',
-        color: 'rgba(255,255,255,0.4)',
+        color: 'rgba(0,0,0,0.4)',
         fontFamily: "'DM Sans', sans-serif",
         fontSize: '.85rem', cursor: 'pointer',
         marginTop: '1.75rem',
@@ -573,11 +594,12 @@ const styles: Record<string, React.CSSProperties> = {
         lineHeight: 1.05,
         letterSpacing: '-.03em',
         margin: 0,
+        color: '#000',
     },
     titleAccent: { color: '#10b981' },
     subtitle: {
         marginTop: '1.1rem',
-        color: 'rgba(255,255,255,0.45)',
+        color: 'rgba(0,0,0,0.5)',
         fontSize: '.95rem',
         lineHeight: 1.7,
         fontFamily: "'DM Mono', monospace",
@@ -588,7 +610,7 @@ const styles: Record<string, React.CSSProperties> = {
     },
     progressBar: {
         width: '100%', maxWidth: 400, height: 6,
-        background: 'rgba(255,255,255,0.08)',
+        background: 'rgba(0,0,0,0.08)',
         borderRadius: 100, overflow: 'hidden',
     },
     progressFill: {
@@ -600,7 +622,7 @@ const styles: Record<string, React.CSSProperties> = {
     progressLabel: {
         fontFamily: "'DM Mono', monospace",
         fontSize: '.78rem',
-        color: 'rgba(255,255,255,0.35)',
+        color: 'rgba(0,0,0,0.4)',
     },
     legend: {
         display: 'flex', justifyContent: 'center', gap: '.6rem',

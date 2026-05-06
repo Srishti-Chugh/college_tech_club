@@ -313,10 +313,10 @@ const TrackBanner: React.FC = () => (
       </div>
     </div>
 
-    {/* Decorative SVG curves — matches homepage Hero.tsx */}
+    {/* Decorative SVG curves */}
     <svg className="ml-banner-curves" viewBox="0 0 1000 200" preserveAspectRatio="none">
-      <path d="M-100 100 C 200 20 800 180 1100 100" stroke="rgba(250,204,21,0.08)" fill="none" strokeWidth="1.5" />
-      <path d="M-100 60 C 300 160 700 40 1100 140" stroke="rgba(79,70,229,0.07)" fill="none" strokeWidth="1" />
+      <path d="M-100 100 C 200 20 800 180 1100 100" stroke="rgba(250,204,21,0.15)" fill="none" strokeWidth="1.5" />
+      <path d="M-100 60 C 300 160 700 40 1100 140" stroke="rgba(79,70,229,0.1)" fill="none" strokeWidth="1" />
     </svg>
   </section>
 );
@@ -732,35 +732,40 @@ export default function MLTrackPage() {
   return (
     <div className="ml-root">
 
-      {/* Ambient background */}
-      <div className="ml-bg" aria-hidden>
-        <NeuralBg />
-        <div className="ml-mesh" />
-        {PARTICLES.map((p,i) => (
-          <span key={i} className="ml-particle"
-            style={{ left:p.x, top:p.y, animationDelay:p.delay }}>
-            {p.label}
-          </span>
-        ))}
-        <div className="ml-scanline" />
+      {/* White hero section */}
+      <div className="ml-hero-wrap">
+        <a href="/" className="ml-back ml-back-light">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+          Home
+        </a>
+
+        {/* ① Track Banner */}
+        <TrackBanner />
       </div>
 
-      {/* Back */}
-      <a href="/" className="ml-back">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-          <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-        </svg>
-        Home
-      </a>
+      {/* Dark content section */}
+      <div className="ml-dark-section">
+        {/* Ambient background */}
+        <div className="ml-bg" aria-hidden>
+          <NeuralBg />
+          <div className="ml-mesh" />
+          {PARTICLES.map((p,i) => (
+            <span key={i} className="ml-particle"
+              style={{ left:p.x, top:p.y, animationDelay:p.delay }}>
+              {p.label}
+            </span>
+          ))}
+          <div className="ml-scanline" />
+        </div>
 
-      {/* ① Track Banner */}
-      <TrackBanner />
+        {/* ② Blog2Code Tool */}
+        <Blog2CodeTool />
 
-      {/* ② Blog2Code Tool */}
-      <Blog2CodeTool />
-
-      {/* ③ Kaggle Competitions */}
-      <KaggleSection />
+        {/* ③ Kaggle Competitions */}
+        <KaggleSection />
+      </div>
 
       <style>{CSS}</style>
     </div>
@@ -795,16 +800,37 @@ const CSS = `
   /* ── Root ── */
   .ml-root {
     min-height: 100vh;
+    background: #fff;
+    font-family: var(--sans);
+    display: flex; flex-direction: column; align-items: center;
+    position: relative; overflow-x: hidden;
+  }
+
+  /* ── White hero wrapper ── */
+  .ml-hero-wrap {
+    width: 100%;
+    background: #fff;
+    color: #000;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 0 1.25rem 3rem;
+    position: relative; z-index: 1;
+  }
+
+  .ml-back-light { color: rgba(0,0,0,.45) !important; }
+  .ml-back-light:hover { color: var(--violet) !important; }
+
+  /* ── Dark content section ── */
+  .ml-dark-section {
+    width: 100%;
     background: var(--bg);
     color: var(--text);
-    font-family: var(--sans);
     display: flex; flex-direction: column; align-items: center;
     padding: 0 1.25rem 6rem;
     position: relative; overflow-x: hidden;
   }
 
   /* ── Ambient BG ── */
-  .ml-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .ml-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
   .ml-mesh {
     position: absolute; inset: 0;
     background:
@@ -834,15 +860,15 @@ const CSS = `
     position: relative; z-index: 2;
     align-self: flex-start; margin-top: 1.6rem;
     display: inline-flex; align-items: center; gap: .45rem;
-    background: rgba(255,255,255,.06);
-    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(0,0,0,.04);
+    border: 1px solid rgba(0,0,0,.1);
     border-radius: 100px; padding: .42rem 1rem;
     font-family: var(--display); font-size: .68rem; font-weight: 800;
     letter-spacing: .14em; text-transform: uppercase;
     color: rgba(255,255,255,.5); text-decoration: none;
     transition: all .2s;
   }
-  .ml-back:hover { color: #fff; background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.24); }
+  .ml-back:hover { color: var(--violet); background: rgba(0,0,0,.06); border-color: rgba(0,0,0,.18); }
 
   /* ═══════════════════════════════════════════════
      TRACK BANNER
@@ -851,15 +877,14 @@ const CSS = `
     position: relative; z-index: 2;
     width: 100%; max-width: 900px;
     margin-top: 2rem;
-    /* Stacked card shadow — homepage Hero.tsx motif */
-    background: rgba(250,204,21,.04);
-    border: 1px solid rgba(250,204,21,.15);
+    background: rgba(250,204,21,.06);
+    border: 1px solid rgba(250,204,21,.2);
     border-radius: 24px;
     padding: 2.75rem 2.5rem;
     overflow: hidden;
     box-shadow:
       0 0 0 1px rgba(250,204,21,.05),
-      0 24px 64px rgba(0,0,0,.55);
+      0 24px 64px rgba(0,0,0,.08);
   }
 
   /* Rotated backer card — mirrors Hero.tsx yellow backer */
@@ -911,7 +936,7 @@ const CSS = `
     font-size: clamp(3rem, 6vw, 4.5rem);
     font-weight: 900; line-height: .92;
     letter-spacing: -.04em; text-transform: uppercase;
-    color: rgba(255,255,255,.95);
+    color: rgba(0,0,0,.9);
     margin-bottom: 1.2rem;
   }
   .ml-banner-title-hl {
@@ -923,19 +948,19 @@ const CSS = `
 
   .ml-banner-desc {
     font-family: var(--sans); font-size: .88rem; line-height: 1.8;
-    color: var(--muted); max-width: 400px; margin-bottom: 1.5rem;
+    color: rgba(0,0,0,.5); max-width: 400px; margin-bottom: 1.5rem;
   }
 
   .ml-banner-pills { display: flex; gap: .45rem; flex-wrap: wrap; }
   .ml-banner-pill {
     font-family: var(--mono); font-size: .65rem;
-    color: rgba(255,255,255,.45);
-    background: rgba(255,255,255,.05);
-    border: 1px solid rgba(255,255,255,.09);
+    color: rgba(0,0,0,.5);
+    background: rgba(0,0,0,.04);
+    border: 1px solid rgba(0,0,0,.1);
     border-radius: 100px; padding: .25rem .7rem;
     transition: all .2s;
   }
-  .ml-banner-pill:hover { color: var(--amber); border-color: rgba(250,204,21,.28); }
+  .ml-banner-pill:hover { color: #b45309; border-color: rgba(250,204,21,.4); }
 
   .ml-banner-right { display: flex; flex-direction: column; gap: 1.75rem; }
 
@@ -945,31 +970,31 @@ const CSS = `
   }
   .ml-banner-stat {
     display: flex; flex-direction: column; align-items: center;
-    background: rgba(255,255,255,.04);
-    border: 1px solid rgba(255,255,255,.08);
+    background: rgba(0,0,0,.03);
+    border: 1px solid rgba(0,0,0,.08);
     border-radius: 16px; padding: .85rem 1.25rem;
     transition: border-color .2s;
   }
-  .ml-banner-stat:hover { border-color: rgba(250,204,21,.25); }
+  .ml-banner-stat:hover { border-color: rgba(250,204,21,.4); }
   .ml-banner-stat-val {
     font-family: var(--display); font-size: 1.8rem;
-    font-weight: 900; letter-spacing: -.04em; color: var(--amber);
+    font-weight: 900; letter-spacing: -.04em; color: #b45309;
   }
   .ml-banner-stat-label {
     font-family: var(--display); font-size: .6rem;
     font-weight: 800; letter-spacing: .16em; text-transform: uppercase;
-    color: rgba(255,255,255,.3); margin-top: .15rem;
+    color: rgba(0,0,0,.35); margin-top: .15rem;
   }
 
   /* Level ladder */
   .ml-banner-ladder { display: flex; flex-direction: column; gap: .7rem; min-width: 220px; }
   .ml-banner-rung { display: flex; align-items: center; gap: .7rem; }
   .ml-banner-rung-num {
-    font-family: var(--mono); font-size: .6rem; color: rgba(255,255,255,.25);
+    font-family: var(--mono); font-size: .6rem; color: rgba(0,0,0,.3);
     min-width: 20px;
   }
   .ml-banner-rung-bar {
-    flex: 1; height: 4px; background: rgba(255,255,255,.07); border-radius: 100px; overflow: hidden;
+    flex: 1; height: 4px; background: rgba(0,0,0,.08); border-radius: 100px; overflow: hidden;
   }
   .ml-banner-rung-fill {
     height: 100%; border-radius: 100px;

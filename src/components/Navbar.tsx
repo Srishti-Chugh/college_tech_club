@@ -2,8 +2,13 @@
 import React from 'react';
 import { Menu, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import ByteLabLogo from './ByteLabLogo';
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  showLogo?: boolean;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ showLogo = true }) => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm text-white px-6 py-4 flex items-center justify-between border-b border-white/10">
       <div className="flex items-center space-x-8">
@@ -14,11 +19,11 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
-      <div className="absolute left-1/2 -translate-x-1/2 flex items-center space-x-2">
-        <div className="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center">
-          <span className="text-white font-black text-sm font-mono">{'{ }'}</span>
-        </div>
-        <span className="font-black text-xl tracking-tighter">theByteLab</span>
+      <div
+        className="absolute left-1/2 -translate-x-1/2 transition-opacity duration-500"
+        style={{ opacity: showLogo ? 1 : 0 }}
+      >
+        <ByteLabLogo size="sm" darkBg />
       </div>
 
       <div className="flex items-center space-x-6">

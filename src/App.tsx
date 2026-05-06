@@ -1,5 +1,5 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import FeaturedBlogs from './components/FeaturedBlogs';
@@ -12,6 +12,7 @@ import { CPRoadmap, ArraysPage, TreesPage, LinkedListPage, StacksQueuesPage, Hea
 import Blog2CodePage from './components/Blog2CodePage';
 import EventsPage from './components/EventsPage';
 import ExplorePage from './components/ExplorePage';
+import IntroAnimation from './components/IntroAnimation';
 
 const JoinPage: React.FC = () => (
   <section className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-6">
@@ -37,9 +38,9 @@ const JoinPage: React.FC = () => (
   </section>
 );
 
-const Home: React.FC = () => (
+const Home: React.FC<{ introComplete: boolean }> = ({ introComplete }) => (
   <>
-    <Hero />
+    <Hero introComplete={introComplete} />
     <FeaturedBlogs />
     <UpcomingEvents />
     <OurTracks />
@@ -48,12 +49,31 @@ const Home: React.FC = () => (
 );
 
 const App: React.FC = () => {
+  const [introComplete, setIntroComplete] = useState(false);
+  const introPlayed = useRef(false);
+  const location = useLocation();
+  const isHome = location.pathname === '/';
+
+  const showIntro = isHome && !introPlayed.current && !introComplete;
+
+  useEffect(() => {
+    if (!isHome || introPlayed.current) {
+      setIntroComplete(true);
+    }
+  }, [isHome]);
+
+  const handleIntroComplete = () => {
+    introPlayed.current = true;
+    setIntroComplete(true);
+  };
+
   return (
     <div className="min-h-screen">
-      <Navbar />
+      {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
+      <Navbar showLogo={!showIntro} />
       <main>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home introComplete={introComplete} />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="/join" element={<JoinPage />} />
