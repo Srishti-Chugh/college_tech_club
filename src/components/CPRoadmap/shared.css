@@ -2105,3 +2105,10 @@
     padding: .38rem .85rem;
   }
 }
+
+/* Main roadmap page — hero back link hover (inline styles need !important) */
+button.cp-roadmap-hero-back:hover {
+  color: #4f46e5 !important;
+  background: rgba(12, 12, 29, .06) !important;
+  border-color: rgba(99, 102, 241, .3) !important;
+}

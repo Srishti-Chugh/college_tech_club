@@ -197,13 +197,6 @@ const LEVEL_META = {
   advanced:     { label: "Advanced",     color: "#f87171", bg: "rgba(248,113,113,0.10)", border: "rgba(248,113,113,0.28)" },
 };
 
-const TRACK_STATS = [
-  { val: "4",   label: "Tools"        },
-  { val: "12+", label: "Competitions" },
-  { val: "6",   label: "Projects"     },
-  { val: "∞",   label: "Datasets"     },
-];
-
 const API_BASE = import.meta.env.VITE_BLOG2CODE_API ?? "http://localhost:8000";
 
 async function callAPI(mode: InputMode, value: string | File): Promise<Blob> {
@@ -232,8 +225,8 @@ const NeuralBg: React.FC = () => {
   const connect = (la:number[],lb:number[]) => la.forEach(a=>lb.forEach(b=>{ if(Math.abs(nodes[a].y-nodes[b].y)<45) edges.push([a,b]); }));
   connect(l1,l2); connect(l2,l3); connect(l3,l4); connect(l4,l5);
   return (
-    <svg viewBox="0 0 100 100" preserveAspectRatio="none"
-      style={{ position:"absolute", inset:0, width:"100%", height:"100%", opacity:0.055 }}>
+    <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"
+      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.055 }}>
       {edges.map(([a,b],i) => (
         <line key={i} x1={nodes[a].x} y1={nodes[a].y} x2={nodes[b].x} y2={nodes[b].y}
           stroke="#a78bfa" strokeWidth="0.15" />
@@ -260,66 +253,6 @@ const PARTICLES = [
 ];
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
-
-/** Track About Banner */
-const TrackBanner: React.FC = () => (
-  <section className="ml-banner">
-    <div className="ml-banner-inner">
-      {/* Left content */}
-      <div className="ml-banner-left">
-        <div className="ml-banner-eyebrow">
-          <span className="ml-banner-dot" />
-          theByteLab · ML TRACK
-        </div>
-        <h2 className="ml-banner-title">
-          Machine<br />
-          <span className="ml-banner-title-hl">Learning</span>
-        </h2>
-        <p className="ml-banner-desc">
-          A hands-on curriculum built around real research, open datasets and
-          production-grade tooling. From your first gradient descent to
-          fine-tuning foundation models — we build things that run.
-        </p>
-        <div className="ml-banner-pills">
-          {["Python", "PyTorch", "Transformers", "Kaggle", "HuggingFace"].map(t => (
-            <span key={t} className="ml-banner-pill">{t}</span>
-          ))}
-        </div>
-      </div>
-
-      {/* Right stats */}
-      <div className="ml-banner-right">
-        <div className="ml-banner-stats">
-          {TRACK_STATS.map(s => (
-            <div key={s.label} className="ml-banner-stat">
-              <span className="ml-banner-stat-val">{s.val}</span>
-              <span className="ml-banner-stat-label">{s.label}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Level ladder */}
-        <div className="ml-banner-ladder">
-          {(["beginner","intermediate","advanced"] as const).map((lv,i) => (
-            <div key={lv} className="ml-banner-rung" style={{ "--rung-clr": LEVEL_META[lv].color } as React.CSSProperties}>
-              <span className="ml-banner-rung-num">0{i+1}</span>
-              <div className="ml-banner-rung-bar">
-                <div className="ml-banner-rung-fill" style={{ width: `${33+i*30}%` }} />
-              </div>
-              <span className="ml-banner-rung-name">{LEVEL_META[lv].label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-
-    {/* Decorative SVG curves */}
-    <svg className="ml-banner-curves" viewBox="0 0 1000 200" preserveAspectRatio="none">
-      <path d="M-100 100 C 200 20 800 180 1100 100" stroke="rgba(250,204,21,0.15)" fill="none" strokeWidth="1.5" />
-      <path d="M-100 60 C 300 160 700 40 1100 140" stroke="rgba(79,70,229,0.1)" fill="none" strokeWidth="1" />
-    </svg>
-  </section>
-);
 
 /** Kaggle Competitions Section */
 const KaggleSection: React.FC = () => {
@@ -559,16 +492,6 @@ const Blog2CodeTool: React.FC = () => {
           Feed any ML/AI blog article — our LLM agent parses, architects and generates a{" "}
           <span className="ml-hl">full working repo</span>, ready to clone and run.
         </p>
-
-        {/* Pipeline strip */}
-        <div className="ml-pipeline-strip">
-          {["Input","Tokenise","Plan","Generate","Output"].map((s,i,arr) => (
-            <React.Fragment key={s}>
-              <div className="ml-strip-node">{s}</div>
-              {i < arr.length-1 && <div className="ml-strip-edge" />}
-            </React.Fragment>
-          ))}
-        </div>
       </div>
 
       {/* Card */}
@@ -738,11 +661,26 @@ export default function MLTrackPage() {
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
             <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
           </svg>
-          Home
+          Back to Home
         </a>
 
-        {/* ① Track Banner */}
-        <TrackBanner />
+        <header className="ml-hero-header">
+          <div className="ml-hero-badge">ML Track</div>
+          <h1 className="ml-hero-title">
+            Machine<br />
+            <span className="ml-hero-title-accent">Learning</span>
+          </h1>
+          <p className="ml-hero-sub">
+            A hands-on curriculum built around real research, open datasets and
+            production-grade tooling. From your first gradient descent to
+            fine-tuning foundation models — we build things that run.
+          </p>
+          <div className="ml-hero-pills">
+            {["Python", "PyTorch", "Transformers", "Kaggle", "HuggingFace"].map(t => (
+              <span key={t} className="ml-hero-pill">{t}</span>
+            ))}
+          </div>
+        </header>
       </div>
 
       {/* Dark content section */}
@@ -806,18 +744,27 @@ const CSS = `
     position: relative; overflow-x: hidden;
   }
 
-  /* ── White hero wrapper ── */
+  /* ── Hero wrapper — pale navy + grid mesh ── */
   .ml-hero-wrap {
     width: 100%;
-    background: #fff;
-    color: #000;
+    background-color: #e8ebf5;
+    background-image:
+      linear-gradient(rgba(12,12,29,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(12,12,29,.04) 1px, transparent 1px),
+      radial-gradient(ellipse 70% 55% at 0% 100%, rgba(99,102,241,.12) 0%, transparent 55%),
+      radial-gradient(ellipse 55% 65% at 100% 0%, rgba(79,70,229,.10) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 50% at 55% 55%, rgba(99,102,241,.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 85% 75%, rgba(129,140,248,.08) 0%, transparent 50%),
+      radial-gradient(ellipse 35% 45% at 15% 25%, rgba(79,70,229,.05) 0%, transparent 50%);
+    background-size: 32px 32px, 32px 32px, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+    color: #0c0c1d;
     display: flex; flex-direction: column; align-items: center;
-    padding: 0 1.25rem 3rem;
+    padding: 6rem 1.5rem 3.5rem;
     position: relative; z-index: 1;
   }
 
-  .ml-back-light { color: rgba(0,0,0,.45) !important; }
-  .ml-back-light:hover { color: var(--violet) !important; }
+  .ml-back-light { color: rgba(12,12,29,.45) !important; }
+  .ml-back-light:hover { color: #4f46e5 !important; }
 
   /* ── Dark content section ── */
   .ml-dark-section {
@@ -858,155 +805,63 @@ const CSS = `
   /* ── Back button — matches shared.css pill style ── */
   .ml-back {
     position: relative; z-index: 2;
-    align-self: flex-start; margin-top: 1.6rem;
+    align-self: flex-start; margin-top: 0;
     display: inline-flex; align-items: center; gap: .45rem;
-    background: rgba(0,0,0,.04);
-    border: 1px solid rgba(0,0,0,.1);
+    background: rgba(12,12,29,.04);
+    border: 1px solid rgba(12,12,29,.1);
     border-radius: 100px; padding: .42rem 1rem;
     font-family: var(--display); font-size: .68rem; font-weight: 800;
     letter-spacing: .14em; text-transform: uppercase;
-    color: rgba(255,255,255,.5); text-decoration: none;
+    color: rgba(12,12,29,.45); text-decoration: none;
     transition: all .2s;
   }
-  .ml-back:hover { color: var(--violet); background: rgba(0,0,0,.06); border-color: rgba(0,0,0,.18); }
+  .ml-back:hover { color: #4f46e5; background: rgba(12,12,29,.06); border-color: rgba(99,102,241,.3); }
 
-  /* ═══════════════════════════════════════════════
-     TRACK BANNER
-  ═══════════════════════════════════════════════ */
-  .ml-banner {
+  /* ── Unified hero (light section) ── */
+  .ml-hero-header {
     position: relative; z-index: 2;
-    width: 100%; max-width: 900px;
+    text-align: center;
     margin-top: 2rem;
-    background: rgba(250,204,21,.06);
-    border: 1px solid rgba(250,204,21,.2);
-    border-radius: 24px;
-    padding: 2.75rem 2.5rem;
-    overflow: hidden;
-    box-shadow:
-      0 0 0 1px rgba(250,204,21,.05),
-      0 24px 64px rgba(0,0,0,.08);
+    max-width: 40rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
-
-  /* Rotated backer card — mirrors Hero.tsx yellow backer */
-  .ml-banner::before {
-    content: '';
-    position: absolute; inset: -12px;
-    background: rgba(250,204,21,.03);
-    border: 1px solid rgba(250,204,21,.08);
-    border-radius: 28px;
-    transform: rotate(-1.2deg);
-    z-index: -1;
-  }
-
-  .ml-banner-curves {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    height: 100%; width: 100%;
-    pointer-events: none; opacity: 1;
-  }
-
-  .ml-banner-inner {
-    display: flex; gap: 3rem; align-items: flex-start; flex-wrap: wrap;
-    position: relative; z-index: 1;
-  }
-
-  .ml-banner-left { flex: 1; min-width: 260px; }
-
-  .ml-banner-eyebrow {
-    display: inline-flex; align-items: center; gap: .5rem;
+  .ml-hero-badge {
+    display: inline-block;
     font-family: var(--display); font-size: .62rem; font-weight: 800;
     letter-spacing: .22em; text-transform: uppercase;
-    color: var(--amber);
-    background: rgba(250,204,21,.1);
-    border: 1px solid rgba(250,204,21,.25);
+    color: #6366f1;
+    background: rgba(99,102,241,.1);
+    border: 1px solid rgba(99,102,241,.25);
     border-radius: 100px; padding: .28rem 1rem;
     margin-bottom: 1.25rem;
   }
-
-  .ml-banner-dot {
-    width: 5px; height: 5px; border-radius: 50%;
-    background: var(--amber);
-    box-shadow: 0 0 6px var(--amber);
-    animation: pulse-dot 2s ease-in-out infinite;
-    flex-shrink: 0;
-  }
-
-  /* Big editorial title — Outfit 900, matches homepage h2 style */
-  .ml-banner-title {
+  .ml-hero-title {
     font-family: var(--display);
-    font-size: clamp(3rem, 6vw, 4.5rem);
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
     font-weight: 900; line-height: .92;
     letter-spacing: -.04em; text-transform: uppercase;
-    color: rgba(0,0,0,.9);
-    margin-bottom: 1.2rem;
+    color: #0c0c1d;
+    margin: 0 0 0;
   }
-  .ml-banner-title-hl {
-    /* gradient text — matches page title treatment */
-    background: linear-gradient(135deg, var(--amber) 0%, #fb923c 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .ml-hero-title-accent { color: #4f46e5; }
+  .ml-hero-sub {
+    font-family: var(--display); font-size: .95rem; font-weight: 500;
+    line-height: 1.7; color: rgba(12,12,29,.55);
+    max-width: 40rem; margin-top: 1.1rem; margin-bottom: 1.5rem;
   }
-
-  .ml-banner-desc {
-    font-family: var(--sans); font-size: .88rem; line-height: 1.8;
-    color: rgba(0,0,0,.5); max-width: 400px; margin-bottom: 1.5rem;
-  }
-
-  .ml-banner-pills { display: flex; gap: .45rem; flex-wrap: wrap; }
-  .ml-banner-pill {
+  .ml-hero-pills { display: flex; gap: .45rem; flex-wrap: wrap; justify-content: center; }
+  .ml-hero-pill {
     font-family: var(--mono); font-size: .65rem;
-    color: rgba(0,0,0,.5);
-    background: rgba(0,0,0,.04);
-    border: 1px solid rgba(0,0,0,.1);
+    color: rgba(12,12,29,.5);
+    background: rgba(12,12,29,.04);
+    border: 1px solid rgba(12,12,29,.1);
     border-radius: 100px; padding: .25rem .7rem;
     transition: all .2s;
   }
-  .ml-banner-pill:hover { color: #b45309; border-color: rgba(250,204,21,.4); }
-
-  .ml-banner-right { display: flex; flex-direction: column; gap: 1.75rem; }
-
-  /* Stats grid — matches homepage metadata row */
-  .ml-banner-stats {
-    display: grid; grid-template-columns: 1fr 1fr; gap: .6rem;
-  }
-  .ml-banner-stat {
-    display: flex; flex-direction: column; align-items: center;
-    background: rgba(0,0,0,.03);
-    border: 1px solid rgba(0,0,0,.08);
-    border-radius: 16px; padding: .85rem 1.25rem;
-    transition: border-color .2s;
-  }
-  .ml-banner-stat:hover { border-color: rgba(250,204,21,.4); }
-  .ml-banner-stat-val {
-    font-family: var(--display); font-size: 1.8rem;
-    font-weight: 900; letter-spacing: -.04em; color: #b45309;
-  }
-  .ml-banner-stat-label {
-    font-family: var(--display); font-size: .6rem;
-    font-weight: 800; letter-spacing: .16em; text-transform: uppercase;
-    color: rgba(0,0,0,.35); margin-top: .15rem;
-  }
-
-  /* Level ladder */
-  .ml-banner-ladder { display: flex; flex-direction: column; gap: .7rem; min-width: 220px; }
-  .ml-banner-rung { display: flex; align-items: center; gap: .7rem; }
-  .ml-banner-rung-num {
-    font-family: var(--mono); font-size: .6rem; color: rgba(0,0,0,.3);
-    min-width: 20px;
-  }
-  .ml-banner-rung-bar {
-    flex: 1; height: 4px; background: rgba(0,0,0,.08); border-radius: 100px; overflow: hidden;
-  }
-  .ml-banner-rung-fill {
-    height: 100%; border-radius: 100px;
-    background: var(--rung-clr);
-    opacity: .75;
-    transition: width .6s cubic-bezier(.34,1.56,.64,1);
-  }
-  .ml-banner-rung-name {
-    font-family: var(--display); font-size: .65rem; font-weight: 800;
-    letter-spacing: .1em; text-transform: uppercase;
-    color: var(--rung-clr); min-width: 90px;
-  }
+  .ml-hero-pill:hover { color: #4f46e5; border-color: rgba(99,102,241,.4); }
 
   /* ═══════════════════════════════════════════════
      SECTION DIVIDER
@@ -1058,28 +913,6 @@ const CSS = `
     margin-bottom: 1.5rem;
   }
   .ml-hl { color: var(--violet); border-bottom: 1px dashed rgba(124,111,255,.4); padding-bottom: 1px; }
-
-  /* Pipeline strip */
-  .ml-pipeline-strip {
-    display: flex; align-items: center; justify-content: center;
-    gap: 0; margin-bottom: 0; flex-wrap: wrap; row-gap: .5rem;
-  }
-  .ml-strip-node {
-    font-family: var(--mono); font-size: .65rem; font-weight: 500;
-    color: rgba(148,163,184,.45); background: rgba(255,255,255,.04);
-    border: 1px solid rgba(255,255,255,.07); border-radius: 4px;
-    padding: .28rem .65rem; white-space: nowrap;
-  }
-  .ml-strip-edge {
-    width: 22px; height: 1px;
-    background: linear-gradient(90deg, rgba(124,111,255,.2), rgba(56,189,248,.2));
-    flex-shrink: 0; position: relative;
-  }
-  .ml-strip-edge::after {
-    content:''; position:absolute; right:0; top:-3px;
-    border-left:5px solid rgba(56,189,248,.3);
-    border-top:3px solid transparent; border-bottom:3px solid transparent;
-  }
 
   /* ── Main Card ── */
   .ml-card {
@@ -1521,14 +1354,11 @@ const CSS = `
 
   /* ── Responsive ── */
   @media (max-width: 680px) {
-    .ml-banner { padding: 1.75rem 1.25rem; }
-    .ml-banner-inner { flex-direction: column; gap: 1.75rem; }
     .ml-kaggle-grid { grid-template-columns: 1fr; }
     .ml-how-grid { grid-template-columns: 1fr; }
     .ml-card { border-radius: 16px; padding: 1.5rem 1.1rem; }
     .ml-tool-title { font-size: 2.4rem; }
-    .ml-pipeline-strip { display: none; }
     .ml-kaggle-filters { border-radius: 16px; }
-    .ml-banner-title { font-size: 2.6rem; }
+    .ml-hero-title { font-size: 2.6rem; }
   }
 `;

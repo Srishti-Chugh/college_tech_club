@@ -36,9 +36,18 @@
    HEADER — pure magazine, white text on black
 ───────────────────────────────────────────────────── */
 .dev-header {
-    background: #fff;
-    color: #000;
-    padding: 8rem 1.5rem 5rem;
+    background-color: #e8ebf5;
+    background-image:
+        linear-gradient(rgba(12, 12, 29, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(12, 12, 29, .035) 1px, transparent 1px),
+        radial-gradient(ellipse 70% 55% at 0% 100%, rgba(99, 102, 241, .12) 0%, transparent 55%),
+        radial-gradient(ellipse 55% 65% at 100% 0%, rgba(79, 70, 229, .10) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 50% at 50% 55%, rgba(99, 102, 241, .06) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 85% 75%, rgba(129, 140, 248, .08) 0%, transparent 50%),
+        radial-gradient(ellipse 35% 45% at 15% 25%, rgba(79, 70, 229, .05) 0%, transparent 50%);
+    background-size: 32px 32px, 32px 32px, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+    color: #0c0c1d;
+    padding: 6rem 1.5rem 3.5rem;
     position: relative;
     overflow: hidden;
 }
@@ -49,56 +58,105 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 1000 300'%3E%3Cpath d='M-100 150 C 200 30 800 270 1100 150' stroke='black' fill='none' stroke-width='1' stroke-opacity='0.05'/%3E%3Cpath d='M-100 90 C 300 240 700 60 1100 210' stroke='black' fill='none' stroke-width='1' stroke-opacity='0.03'/%3E%3C/svg%3E");
+    z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 1000 300'%3E%3Cpath d='M-100 150 C 200 30 800 270 1100 150' stroke='rgba(12,12,29,0.06)' fill='none' stroke-width='1'/%3E%3Cpath d='M-100 90 C 300 240 700 60 1100 210' stroke='rgba(12,12,29,0.04)' fill='none' stroke-width='1'/%3E%3C/svg%3E");
     background-size: cover;
 }
 
 .dev-header-inner {
-    max-width: 72rem;
+    max-width: 40rem;
     margin: 0 auto;
     position: relative;
     z-index: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dev-back-corner {
+    position: absolute;
+    top: 1.25rem;
+    left: 1.5rem;
+    z-index: 2;
+    margin-bottom: 0;
+}
+
+.dev-hero-badge {
+    display: inline-block;
+    font-family: var(--display);
+    font-size: .62rem;
+    font-weight: 800;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: #6366f1;
+    background: rgba(99, 102, 241, .1);
+    border: 1px solid rgba(99, 102, 241, .25);
+    border-radius: 100px;
+    padding: .28rem 1rem;
+    margin-bottom: 1.25rem;
 }
 
 .dev-back {
     display: inline-flex;
     align-items: center;
-    gap: .5rem;
-    font-size: .72rem;
-    font-weight: 700;
+    gap: .45rem;
+    font-family: var(--display);
+    font-size: .68rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: .12em;
-    color: rgba(0, 0, 0, .45);
+    letter-spacing: .14em;
+    color: rgba(12, 12, 29, .45);
     text-decoration: none;
     margin-bottom: 2rem;
-    transition: color .2s;
+    background: rgba(12, 12, 29, .04);
+    border: 1px solid rgba(12, 12, 29, .1);
+    border-radius: 100px;
+    padding: .42rem 1rem;
+    transition: color .2s, background .2s, border-color .2s;
 }
 
 .dev-back:hover {
-    color: var(--dev-indigo);
+    color: #4f46e5;
+    background: rgba(12, 12, 29, .06);
+    border-color: rgba(99, 102, 241, .3);
+}
+
+.dev-back.dev-back-corner {
+    margin-bottom: 0;
 }
 
 .dev-h1 {
     font-family: var(--display);
-    font-size: clamp(3.5rem, 10vw, 6rem);
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
     font-weight: 900;
     line-height: .92;
     text-transform: uppercase;
     letter-spacing: -.04em;
-    margin-bottom: 1.25rem;
-    color: #000;
+    margin-bottom: 1.1rem;
+    color: #0c0c1d;
 }
 
-.dev-h1-ghost {
-    color: rgba(0, 0, 0, .12);
-    -webkit-text-stroke: 1px rgba(0, 0, 0, .15);
+.dev-h1-accent {
+    color: #4f46e5;
+}
+
+.dev-header-tagline {
+    font-family: var(--display);
+    font-size: .95rem;
+    font-weight: 600;
+    color: rgba(12, 12, 29, .62);
+    max-width: 36rem;
+    line-height: 1.45;
+    margin: 0 0 .85rem;
 }
 
 .dev-header-sub {
-    font-size: 1.1rem;
-    color: rgba(0, 0, 0, .55);
-    max-width: 40rem;
+    font-family: var(--display);
+    font-size: .88rem;
     font-weight: 500;
+    color: rgba(12, 12, 29, .5);
+    max-width: 40rem;
     line-height: 1.7;
 }
 

@@ -340,13 +340,13 @@ const CPRoadmap: React.FC = () => {
         <div style={styles.root}>
             {/* White hero section */}
             <div style={styles.heroWrap}>
-                <button onClick={() => navigate('/')} style={styles.backBtn}>
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
-                    Back
+                <button type="button" onClick={() => navigate('/')} className="cp-roadmap-hero-back" style={styles.backBtn}>
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
+                    Back to Home
                 </button>
 
                 <header style={styles.header}>
-                    <div style={styles.badge}>Competitive Programming · DSA Roadmap</div>
+                    <div style={styles.badge}>Competitive Programming</div>
                     <h1 style={styles.title}>
                         Data Structures<br />
                         <span style={styles.titleAccent}>&amp; Algorithms</span>
@@ -519,12 +519,22 @@ const styles: Record<string, React.CSSProperties> = {
     },
     heroWrap: {
         width: '100%',
-        background: '#fff',
-        color: '#000',
+        backgroundColor: '#e8ebf5',
+        backgroundImage: [
+            'linear-gradient(rgba(12,12,29,.04) 1px, transparent 1px)',
+            'linear-gradient(90deg, rgba(12,12,29,.04) 1px, transparent 1px)',
+            'radial-gradient(ellipse 70% 55% at 0% 100%, rgba(99,102,241,.12) 0%, transparent 55%)',
+            'radial-gradient(ellipse 55% 65% at 100% 0%, rgba(79,70,229,.10) 0%, transparent 55%)',
+            'radial-gradient(ellipse 50% 50% at 50% 60%, rgba(99,102,241,.06) 0%, transparent 60%)',
+            'radial-gradient(ellipse 40% 40% at 85% 75%, rgba(129,140,248,.08) 0%, transparent 50%)',
+            'radial-gradient(ellipse 35% 45% at 15% 25%, rgba(79,70,229,.05) 0%, transparent 50%)',
+        ].join(','),
+        backgroundSize: '32px 32px, 32px 32px, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%',
+        color: '#0c0c1d',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: '0 1.25rem 3rem',
+        padding: '6rem 1.5rem 3.5rem',
         position: 'relative',
         zIndex: 1,
     },
@@ -559,50 +569,63 @@ const styles: Record<string, React.CSSProperties> = {
     backBtn: {
         position: 'relative', zIndex: 2,
         alignSelf: 'flex-start',
-        display: 'flex', alignItems: 'center', gap: '.4rem',
-        background: 'transparent', border: 'none',
-        color: 'rgba(0,0,0,0.4)',
-        fontFamily: "'DM Sans', sans-serif",
-        fontSize: '.85rem', cursor: 'pointer',
-        marginTop: '1.75rem',
-        transition: 'color .2s',
+        display: 'inline-flex', alignItems: 'center', gap: '.45rem',
+        background: 'rgba(12,12,29,.04)',
+        border: '1px solid rgba(12,12,29,.1)',
+        borderRadius: 100,
+        padding: '.42rem 1rem',
+        color: 'rgba(12,12,29,0.45)',
+        fontFamily: "'Outfit', sans-serif",
+        fontSize: '.68rem',
+        fontWeight: 800,
+        letterSpacing: '.14em',
+        textTransform: 'uppercase' as const,
+        cursor: 'pointer',
+        marginTop: 0,
+        transition: 'color .2s, background .2s, border-color .2s',
     },
     header: {
         position: 'relative', zIndex: 2,
         textAlign: 'center',
-        marginTop: '3rem',
-        maxWidth: 720,
+        marginTop: '2rem',
+        maxWidth: '40rem',
         width: '100%',
     },
     badge: {
         display: 'inline-block',
-        fontFamily: "'DM Mono', monospace",
-        fontSize: '.72rem',
-        letterSpacing: '.14em',
+        fontFamily: "'Outfit', sans-serif",
+        fontSize: '.62rem',
+        fontWeight: 800,
+        letterSpacing: '.22em',
         textTransform: 'uppercase' as const,
-        color: '#10b981',
-        background: 'rgba(16,185,129,0.1)',
-        border: '1px solid rgba(16,185,129,0.25)',
+        color: '#6366f1',
+        background: 'rgba(99,102,241,0.1)',
+        border: '1px solid rgba(99,102,241,0.25)',
         borderRadius: 100,
-        padding: '.3rem .9rem',
-        marginBottom: '1.4rem',
+        padding: '.28rem 1rem',
+        marginBottom: '1.25rem',
     },
     title: {
-        fontFamily: "'DM Sans', sans-serif",
-        fontSize: 'clamp(2.6rem,7vw,5rem)',
-        fontWeight: 800,
-        lineHeight: 1.05,
-        letterSpacing: '-.03em',
+        fontFamily: "'Outfit', sans-serif",
+        fontSize: 'clamp(2.8rem, 6vw, 4.5rem)',
+        fontWeight: 900,
+        lineHeight: 0.92,
+        letterSpacing: '-.04em',
+        textTransform: 'uppercase' as const,
         margin: 0,
-        color: '#000',
+        color: '#0c0c1d',
     },
-    titleAccent: { color: '#10b981' },
+    titleAccent: { color: '#4f46e5' },
     subtitle: {
         marginTop: '1.1rem',
-        color: 'rgba(0,0,0,0.5)',
+        color: 'rgba(12,12,29,0.55)',
         fontSize: '.95rem',
+        fontWeight: 500,
         lineHeight: 1.7,
-        fontFamily: "'DM Mono', monospace",
+        fontFamily: "'Outfit', sans-serif",
+        maxWidth: '40rem',
+        marginLeft: 'auto',
+        marginRight: 'auto',
     },
     progressWrap: {
         marginTop: '1.75rem',
@@ -610,19 +633,20 @@ const styles: Record<string, React.CSSProperties> = {
     },
     progressBar: {
         width: '100%', maxWidth: 400, height: 6,
-        background: 'rgba(0,0,0,0.08)',
+        background: 'rgba(12,12,29,0.08)',
         borderRadius: 100, overflow: 'hidden',
     },
     progressFill: {
         height: '100%',
-        background: 'linear-gradient(90deg, #10b981, #6cffb4)',
+        background: 'linear-gradient(90deg, #6366f1, #818cf8)',
         borderRadius: 100,
         transition: 'width .4s ease',
     },
     progressLabel: {
-        fontFamily: "'DM Mono', monospace",
+        fontFamily: "'Outfit', sans-serif",
         fontSize: '.78rem',
-        color: 'rgba(0,0,0,0.4)',
+        fontWeight: 500,
+        color: 'rgba(12,12,29,0.45)',
     },
     legend: {
         display: 'flex', justifyContent: 'center', gap: '.6rem',

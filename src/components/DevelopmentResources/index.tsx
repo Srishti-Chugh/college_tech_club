@@ -42,14 +42,18 @@ const DevelopmentResources: React.FC = () => {
 
             {/* ── Header — white magazine ── */}
             <header className="dev-header">
+                <Link to="/" className="dev-back dev-back-corner">
+                    <ArrowLeft size={14} />
+                    Back to Home
+                </Link>
                 <div className="dev-header-inner">
-                    <Link to="/" className="dev-back">
-                        <ArrowLeft size={14} />
-                        Back to Home
-                    </Link>
+                    <div className="dev-hero-badge">Development</div>
                     <h1 className="dev-h1">
-                        Dev <span className="dev-h1-ghost">Hub</span>
+                        Dev <span className="dev-h1-accent">Hub</span>
                     </h1>
+                    <p className="dev-header-tagline">
+                        Tech stacks, starter links, and inspiration — all in one place.
+                    </p>
                     <p className="dev-header-sub">
                         Curated resources for modern development. Whether you're writing your first line of code or looking for advanced inspiration, we've got you covered.
                     </p>
