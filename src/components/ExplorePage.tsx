@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -6,240 +6,64 @@ import {
   BookOpen,
   ExternalLink,
   Clock,
-  TrendingUp,
   Zap,
   Globe,
+  TrendingUp,
   Filter,
 } from 'lucide-react';
 
 interface NewsItem {
   id: string;
-  headline: string;
-  summary: string;
-  source: string;
+  title: string;
+  summary?: string;
+  source?: string;
   date: string;
   imageUrl: string;
   category: string;
   featured?: boolean;
+  url?: string;
 }
 
 interface BlogEntry {
   id: string;
   title: string;
-  author: string;
+  author?: string;
   category: string;
+  categoryColor: string;
   date: string;
   readTime: string;
-  link: string;
-  description: string;
+  imageUrl: string;
+  url?: string;
+  description?: string;
 }
 
-const NEWS_ITEMS: NewsItem[] = [
-  {
-    id: '1',
-    headline: 'OpenAI Unveils GPT-5 with Real-Time Reasoning Capabilities',
-    summary:
-      'The latest model demonstrates unprecedented chain-of-thought reasoning, scoring 92% on graduate-level science benchmarks. Researchers say it marks a significant leap toward artificial general intelligence.',
-    source: 'TechCrunch',
-    date: 'May 5, 2026',
-    imageUrl:
-      'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800',
-    category: 'AI',
-    featured: true,
-  },
-  {
-    id: '2',
-    headline: 'Apple Announces M5 Ultra Chip at WWDC Preview',
-    summary:
-      'The next-generation silicon promises 3x the neural engine throughput, targeting AI-native applications on device. Expected to ship in new Mac Pro lineup this fall.',
-    source: 'The Verge',
-    date: 'May 4, 2026',
-    imageUrl:
-      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=800',
-    category: 'Hardware',
-  },
-  {
-    id: '3',
-    headline: 'Rust Overtakes C++ in Systems Programming Popularity Index',
-    summary:
-      'For the first time, Rust has surpassed C++ on the TIOBE index for systems-level programming, driven by adoption in Linux kernel, Android, and Windows.',
-    source: 'InfoQ',
-    date: 'May 3, 2026',
-    imageUrl:
-      'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800',
-    category: 'Programming',
-  },
-  {
-    id: '4',
-    headline: 'SpaceX Starlink V3 Achieves 1Gbps Global Average Speed',
-    summary:
-      'The third-generation satellite constellation now delivers fiber-equivalent speeds to remote regions, disrupting traditional ISP markets worldwide.',
-    source: 'Ars Technica',
-    date: 'May 3, 2026',
-    imageUrl:
-      'https://images.unsplash.com/photo-1516849841032-87cbac4d88f7?auto=format&fit=crop&q=80&w=800',
-    category: 'Space Tech',
-  },
-  {
-    id: '5',
-    headline: 'EU Passes Landmark AI Liability Directive',
-    summary:
-      'New regulations hold AI developers accountable for harm caused by autonomous systems, setting a global precedent for AI governance.',
-    source: 'Reuters',
-    date: 'May 2, 2026',
-    imageUrl:
-      'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&q=80&w=800',
-    category: 'Policy',
-  },
-  {
-    id: '6',
-    headline: 'Quantum Computing Hits 10,000-Qubit Milestone',
-    summary:
-      'IBM and Google jointly announce a breakthrough in error-corrected quantum processors, making practical quantum advantage a near-term reality.',
-    source: 'MIT Tech Review',
-    date: 'May 1, 2026',
-    imageUrl:
-      'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&q=80&w=800',
-    category: 'Quantum',
-  },
-];
-
-const BLOG_ENTRIES: BlogEntry[] = [
-  {
-    id: '1',
-    title: 'Building Scalable APIs with Rust and Actix-Web',
-    author: 'Arjun Mehta',
-    category: 'Backend',
-    date: 'May 4, 2026',
-    readTime: '12 min',
-    link: '#',
-    description: 'A deep dive into high-performance web services using Rust.',
-  },
-  {
-    id: '2',
-    title: 'Understanding Transformer Architectures from Scratch',
-    author: 'Priya Sharma',
-    category: 'AI/ML',
-    date: 'May 3, 2026',
-    readTime: '18 min',
-    link: '#',
-    description:
-      'Step-by-step implementation of attention mechanisms and positional encoding.',
-  },
-  {
-    id: '3',
-    title: 'React Server Components: The Complete Guide',
-    author: 'Rahul Verma',
-    category: 'Frontend',
-    date: 'May 2, 2026',
-    readTime: '15 min',
-    link: '#',
-    description:
-      'How RSC changes the mental model of data fetching in React apps.',
-  },
-  {
-    id: '4',
-    title: 'Competitive Programming: Mastering Segment Trees',
-    author: 'Sneha Iyer',
-    category: 'DSA',
-    date: 'May 1, 2026',
-    readTime: '20 min',
-    link: '#',
-    description:
-      'Range queries, lazy propagation, and advanced tree techniques.',
-  },
-  {
-    id: '5',
-    title: 'DevOps in 2026: GitOps, Platform Engineering & Beyond',
-    author: 'Karan Singh',
-    category: 'DevOps',
-    date: 'Apr 30, 2026',
-    readTime: '10 min',
-    link: '#',
-    description:
-      'The shifting landscape of infrastructure automation and developer experience.',
-  },
-  {
-    id: '6',
-    title: 'Introduction to WebAssembly for Web Developers',
-    author: 'Ananya Das',
-    category: 'Frontend',
-    date: 'Apr 29, 2026',
-    readTime: '14 min',
-    link: '#',
-    description:
-      'Bringing near-native performance to the browser with WASM.',
-  },
-  {
-    id: '7',
-    title: 'Graph Neural Networks: Theory and Applications',
-    author: 'Vikram Patel',
-    category: 'AI/ML',
-    date: 'Apr 28, 2026',
-    readTime: '22 min',
-    link: '#',
-    description:
-      'How GNNs are revolutionizing molecule discovery and social network analysis.',
-  },
-  {
-    id: '8',
-    title: 'Kubernetes Networking Deep Dive',
-    author: 'Rohan Gupta',
-    category: 'DevOps',
-    date: 'Apr 27, 2026',
-    readTime: '16 min',
-    link: '#',
-    description:
-      'CNI plugins, service meshes, and network policies demystified.',
-  },
-  {
-    id: '9',
-    title: 'Solving Dynamic Programming Problems Intuitively',
-    author: 'Meera Joshi',
-    category: 'DSA',
-    date: 'Apr 26, 2026',
-    readTime: '17 min',
-    link: '#',
-    description:
-      'Pattern recognition techniques that make DP approachable.',
-  },
-  {
-    id: '10',
-    title: 'Building a Real-Time Chat App with WebSockets & Go',
-    author: 'Aditya Nair',
-    category: 'Backend',
-    date: 'Apr 25, 2026',
-    readTime: '13 min',
-    link: '#',
-    description:
-      'Goroutines, channels, and efficient message broadcasting.',
-  },
-];
-
 const CATEGORY_COLORS: Record<string, string> = {
-  'AI/ML': 'bg-purple-100 text-purple-800',
-  Frontend: 'bg-blue-100 text-blue-800',
-  Backend: 'bg-green-100 text-green-800',
-  DSA: 'bg-orange-100 text-orange-800',
-  DevOps: 'bg-cyan-100 text-cyan-800',
+  CP: 'bg-orange-100 text-orange-800',
+  ML: 'bg-purple-100 text-purple-800',
+  Dev: 'bg-blue-100 text-blue-800',
+  Research: 'bg-emerald-100 text-emerald-800',
 };
 
 const NEWS_CATEGORY_ICONS: Record<string, React.ReactNode> = {
   AI: <Zap size={14} />,
-  Hardware: <Globe size={14} />,
+  Industry: <Globe size={14} />,
+  'CP News': <TrendingUp size={14} />,
   Programming: <BookOpen size={14} />,
-  'Space Tech': <TrendingUp size={14} />,
-  Policy: <Globe size={14} />,
   Quantum: <Zap size={14} />,
+  Policy: <Globe size={14} />,
+  Tech: <Globe size={14} />,
 };
 
-const ThisWeekInTech: React.FC = () => {
-  const featured = NEWS_ITEMS.find((n) => n.featured);
-  const rest = NEWS_ITEMS.filter((n) => !n.featured);
+const ThisWeekInTech: React.FC<{ items: NewsItem[] }> = ({ items }) => {
+  const featured = items.find((n) => n.featured);
+  const rest = items.filter((n) => !n.featured);
+
+  if (items.length === 0) {
+    return <p className="text-center py-16 text-gray-400 text-sm italic">No news yet — check back soon.</p>;
+  }
 
   return (
     <div className="max-w-6xl mx-auto">
-      {/* Newspaper masthead */}
       <div className="text-center border-b-4 border-double border-black pb-6 mb-8">
         <p className="text-xs tracking-[0.3em] uppercase text-gray-500 mb-2">
           Your weekly digest of everything tech
@@ -251,21 +75,18 @@ const ThisWeekInTech: React.FC = () => {
           This Week in Tech
         </h2>
         <div className="flex items-center justify-center gap-6 mt-4 text-xs tracking-wider uppercase text-gray-500">
-          <span>Vol. 12 &middot; Issue 18</span>
-          <span className="w-1 h-1 rounded-full bg-gray-400" />
-          <span>May 5, 2026</span>
-          <span className="w-1 h-1 rounded-full bg-gray-400" />
           <span>Tech Club Weekly</span>
+          <span className="w-1 h-1 rounded-full bg-gray-400" />
+          <span>Updated from news.json</span>
         </div>
       </div>
 
-      {/* Featured story */}
       {featured && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10 pb-10 border-b border-gray-200">
           <div className="relative overflow-hidden rounded-2xl h-72 lg:h-auto">
             <img
               src={featured.imageUrl}
-              alt={featured.headline}
+              alt={featured.title}
               className="w-full h-full object-cover"
             />
             <div className="absolute top-4 left-4 bg-red-600 text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded">
@@ -280,13 +101,15 @@ const ThisWeekInTech: React.FC = () => {
               className="text-3xl md:text-4xl font-black leading-tight mb-4"
               style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
             >
-              {featured.headline}
+              {featured.title}
             </h3>
-            <p className="text-gray-600 leading-relaxed mb-4 text-base">
-              {featured.summary}
-            </p>
+            {featured.summary && (
+              <p className="text-gray-600 leading-relaxed mb-4 text-base">
+                {featured.summary}
+              </p>
+            )}
             <div className="flex items-center gap-4 text-xs text-gray-400 uppercase tracking-wider">
-              <span>{featured.source}</span>
+              {featured.source && <span>{featured.source}</span>}
               <span className="w-1 h-1 rounded-full bg-gray-300" />
               <span className="flex items-center gap-1">
                 <Clock size={12} />
@@ -297,7 +120,6 @@ const ThisWeekInTech: React.FC = () => {
         </div>
       )}
 
-      {/* News grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
         {rest.map((item, index) => (
           <article
@@ -311,13 +133,13 @@ const ThisWeekInTech: React.FC = () => {
             <div className="relative overflow-hidden rounded-xl h-44 mb-4">
               <img
                 src={item.imageUrl}
-                alt={item.headline}
+                alt={item.title}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </div>
             <div className="flex items-center gap-2 mb-2">
               <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-indigo-600">
-                {NEWS_CATEGORY_ICONS[item.category]}
+                {NEWS_CATEGORY_ICONS[item.category] || <Globe size={14} />}
                 {item.category}
               </span>
             </div>
@@ -325,14 +147,16 @@ const ThisWeekInTech: React.FC = () => {
               className="text-lg font-bold leading-snug mb-2 group-hover:text-indigo-600 transition-colors"
               style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
             >
-              {item.headline}
+              {item.title}
             </h4>
-            <p className="text-sm text-gray-500 leading-relaxed mb-3">
-              {item.summary}
-            </p>
+            {item.summary && (
+              <p className="text-sm text-gray-500 leading-relaxed mb-3">
+                {item.summary}
+              </p>
+            )}
             <div className="flex items-center gap-3 text-[10px] uppercase tracking-wider text-gray-400">
-              <span>{item.source}</span>
-              <span className="w-1 h-1 rounded-full bg-gray-300" />
+              {item.source && <span>{item.source}</span>}
+              {item.source && <span className="w-1 h-1 rounded-full bg-gray-300" />}
               <span>{item.date}</span>
             </div>
           </article>
@@ -342,137 +166,183 @@ const ThisWeekInTech: React.FC = () => {
   );
 };
 
-const BlogsTab: React.FC = () => {
+const BlogsTab: React.FC<{ entries: BlogEntry[] }> = ({ entries }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
   const categories = useMemo(() => {
-    const cats = Array.from(new Set(BLOG_ENTRIES.map((b) => b.category)));
+    const cats = Array.from(new Set(entries.map((b) => b.category)));
     return ['All', ...cats.sort()];
-  }, []);
+  }, [entries]);
 
   const filtered = useMemo(
     () =>
       selectedCategory === 'All'
-        ? BLOG_ENTRIES
-        : BLOG_ENTRIES.filter((b) => b.category === selectedCategory),
-    [selectedCategory],
+        ? entries
+        : entries.filter((b) => b.category === selectedCategory),
+    [selectedCategory, entries],
   );
+
+  if (entries.length === 0) {
+    return <p className="text-center py-16 text-gray-400 text-sm italic">No blogs yet — check back soon.</p>;
+  }
+
+  const grouped = useMemo(() => {
+    const map: Record<string, BlogEntry[]> = {};
+    filtered.forEach(b => {
+      if (!map[b.category]) map[b.category] = [];
+      map[b.category].push(b);
+    });
+    return map;
+  }, [filtered]);
 
   return (
     <div className="max-w-6xl mx-auto">
-      {/* Header */}
-      <div className="mb-8">
-        <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight mb-2">
-          Blog Directory
-        </h2>
-        <p className="text-gray-500 text-sm">
-          Curated reads from the community — filter by topic to find what
-          matters to you.
-        </p>
+      {/* Header row */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div>
+          <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight mb-2">
+            Blog Directory
+          </h2>
+          <p className="text-gray-500 text-sm">
+            Curated reads from the community — filter by topic to find what
+            matters to you.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 flex-wrap">
+          <Filter size={14} className="text-gray-400" />
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${
+                selectedCategory === cat
+                  ? 'bg-black text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Category filter */}
-      <div className="flex items-center gap-3 mb-8 flex-wrap">
-        <Filter size={16} className="text-gray-400" />
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${
-              selectedCategory === cat
-                ? 'bg-black text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
+      <div className="border-t border-gray-200" />
 
-      {/* Blog table */}
-      <div className="overflow-x-auto rounded-2xl border border-gray-200">
-        <table className="w-full text-left">
-          <thead>
-            <tr className="bg-gray-50 border-b border-gray-200">
-              <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                Title
-              </th>
-              <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 hidden md:table-cell">
-                Author
-              </th>
-              <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 hidden sm:table-cell">
-                Category
-              </th>
-              <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 hidden lg:table-cell">
-                Date
-              </th>
-              <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-gray-500 hidden lg:table-cell">
-                Read Time
-              </th>
-              <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                Link
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((blog, idx) => (
-              <tr
-                key={blog.id}
-                className={`group hover:bg-indigo-50/50 transition-colors ${
-                  idx < filtered.length - 1
-                    ? 'border-b border-gray-100'
-                    : ''
-                }`}
-              >
-                <td className="px-6 py-5">
-                  <div className="font-semibold text-sm group-hover:text-indigo-600 transition-colors">
-                    {blog.title}
-                  </div>
-                  <div className="text-xs text-gray-400 mt-1">
-                    {blog.description}
-                  </div>
-                </td>
-                <td className="px-6 py-5 text-sm text-gray-600 hidden md:table-cell">
-                  {blog.author}
-                </td>
-                <td className="px-6 py-5 hidden sm:table-cell">
-                  <span
-                    className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full ${
-                      CATEGORY_COLORS[blog.category] ||
-                      'bg-gray-100 text-gray-700'
-                    }`}
+      {selectedCategory === 'All' ? (
+        /* Grouped by category — two-column layout */
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-10 mt-8">
+          {Object.entries(grouped).map(([category, blogs]) => (
+            <div key={category}>
+              {/* Category header */}
+              <div className="flex items-center gap-3 mb-4 pb-3 border-b border-gray-100">
+                <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full ${
+                  CATEGORY_COLORS[category] || 'bg-gray-100 text-gray-700'
+                }`}>
+                  {category}
+                </span>
+                <span className="text-[11px] text-gray-400 font-mono">{blogs.length} {blogs.length === 1 ? 'post' : 'posts'}</span>
+              </div>
+
+              {/* Blog entries under this category */}
+              <div>
+                {blogs.map((blog, idx) => (
+                  <a
+                    key={blog.id}
+                    href={blog.url || undefined}
+                    target={blog.url ? '_blank' : undefined}
+                    rel={blog.url ? 'noopener noreferrer' : undefined}
+                    className={`group block py-4 ${
+                      idx < blogs.length - 1 ? 'border-b border-gray-50' : ''
+                    } hover:bg-gray-50 -mx-3 px-3 rounded-lg transition-colors`}
                   >
-                    {blog.category}
-                  </span>
-                </td>
-                <td className="px-6 py-5 text-xs text-gray-400 hidden lg:table-cell">
-                  {blog.date}
-                </td>
-                <td className="px-6 py-5 text-xs text-gray-400 hidden lg:table-cell">
+                    <h4 className="text-[15px] font-semibold leading-snug mb-1 text-gray-900 group-hover:text-indigo-600 transition-colors">
+                      {blog.title}
+                    </h4>
+                    {blog.description && (
+                      <p className="text-sm text-gray-400 leading-relaxed mb-2 line-clamp-1">
+                        {blog.description}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-3 text-[11px] text-gray-400">
+                      {blog.author && (
+                        <span className="flex items-center gap-1.5">
+                          <span className="w-4 h-4 rounded-full bg-gray-200 flex items-center justify-center text-[8px] font-bold text-gray-500">
+                            {blog.author.charAt(0)}
+                          </span>
+                          {blog.author}
+                        </span>
+                      )}
+                      <span className="w-0.5 h-0.5 rounded-full bg-gray-300" />
+                      <span className="flex items-center gap-1">
+                        <Clock size={10} />
+                        {blog.readTime}
+                      </span>
+                      <span className="w-0.5 h-0.5 rounded-full bg-gray-300" />
+                      <span>{blog.date}</span>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        /* Single category — full-width list */
+        <div className="mt-8">
+          {filtered.map((blog, idx) => (
+            <a
+              key={blog.id}
+              href={blog.url || undefined}
+              target={blog.url ? '_blank' : undefined}
+              rel={blog.url ? 'noopener noreferrer' : undefined}
+              className={`group flex items-start gap-5 py-5 ${
+                idx < filtered.length - 1 ? 'border-b border-gray-100' : ''
+              } hover:bg-gray-50 -mx-4 px-4 rounded-lg transition-colors`}
+            >
+              {/* Number */}
+              <span className="text-3xl font-black text-gray-200 group-hover:text-indigo-200 transition-colors leading-none mt-1 shrink-0 w-8 text-right">
+                {String(idx + 1).padStart(2, '0')}
+              </span>
+
+              <div className="flex-1 min-w-0">
+                <h4 className="text-base font-bold leading-snug mb-1 text-gray-900 group-hover:text-indigo-600 transition-colors">
+                  {blog.title}
+                </h4>
+                {blog.description && (
+                  <p className="text-sm text-gray-500 leading-relaxed mb-2 line-clamp-2">
+                    {blog.description}
+                  </p>
+                )}
+                <div className="flex items-center gap-3 text-[11px] text-gray-400">
+                  {blog.author && (
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center text-[9px] font-bold text-gray-500">
+                        {blog.author.charAt(0)}
+                      </span>
+                      {blog.author}
+                    </span>
+                  )}
+                  <span className="w-0.5 h-0.5 rounded-full bg-gray-300" />
                   <span className="flex items-center gap-1">
-                    <Clock size={12} />
+                    <Clock size={11} />
                     {blog.readTime}
                   </span>
-                </td>
-                <td className="px-6 py-5">
-                  <a
-                    href={blog.link}
-                    className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-indigo-600 hover:text-indigo-800 transition-colors"
-                  >
-                    Read
-                    <ExternalLink size={12} />
-                  </a>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {filtered.length === 0 && (
-          <div className="text-center py-16 text-gray-400 text-sm">
-            No blogs found in this category.
-          </div>
-        )}
-      </div>
+                  <span className="w-0.5 h-0.5 rounded-full bg-gray-300" />
+                  <span>{blog.date}</span>
+                  <ExternalLink size={11} className="ml-auto text-gray-300 group-hover:text-indigo-500 transition-colors" />
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      )}
+
+      {filtered.length === 0 && (
+        <div className="text-center py-16 text-gray-400 text-sm">
+          No blogs found in this category.
+        </div>
+      )}
     </div>
   );
 };
@@ -481,11 +351,24 @@ type Tab = 'news' | 'blogs';
 
 const ExplorePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('news');
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+  const [blogEntries, setBlogEntries] = useState<BlogEntry[]>([]);
+
+  useEffect(() => {
+    fetch('/news.json')
+      .then(r => r.json())
+      .then((data: NewsItem[]) => setNewsItems(data))
+      .catch(() => setNewsItems([]));
+
+    fetch('/blogs.json')
+      .then(r => r.json())
+      .then((data: BlogEntry[]) => setBlogEntries(data))
+      .catch(() => setBlogEntries([]));
+  }, []);
 
   return (
     <section className="min-h-screen bg-white pt-28 pb-20">
       <div className="container mx-auto px-6">
-        {/* Back link */}
         <Link
           to="/"
           className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-400 hover:text-black transition-colors mb-10"
@@ -494,7 +377,6 @@ const ExplorePage: React.FC = () => {
           Back to Home
         </Link>
 
-        {/* Toggle */}
         <div className="flex justify-center mb-12">
           <div className="inline-flex bg-gray-100 rounded-full p-1">
             <button
@@ -522,8 +404,10 @@ const ExplorePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Tab content */}
-        {activeTab === 'news' ? <ThisWeekInTech /> : <BlogsTab />}
+        {activeTab === 'news'
+          ? <ThisWeekInTech items={newsItems} />
+          : <BlogsTab entries={blogEntries} />
+        }
       </div>
     </section>
   );

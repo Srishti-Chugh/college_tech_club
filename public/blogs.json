@@ -1,0 +1,98 @@
+[
+  {
+    "id": "b1",
+    "title": "How to Start with Competitive Programming in 2026",
+    "type": "blog",
+    "author": "Sneha Iyer",
+    "category": "CP",
+    "categoryColor": "bg-orange-200",
+    "readTime": "6 min read",
+    "date": "05 May, 2026",
+    "url": "",
+    "description": "A practical roadmap covering platforms, practice strategies, and contest tips for beginners."
+  },
+  {
+    "id": "b2",
+    "title": "Building Your First Full-Stack App with React & Node",
+    "type": "blog",
+    "author": "Rahul Verma",
+    "category": "Dev",
+    "categoryColor": "bg-blue-200",
+    "readTime": "10 min read",
+    "date": "02 May, 2026",
+    "url": "",
+    "description": "End-to-end guide from setup to deployment — REST APIs, authentication, and hosting."
+  },
+  {
+    "id": "b3",
+    "title": "Fine-Tuning LLMs on Custom Datasets — A Beginner's Guide",
+    "type": "blog",
+    "author": "Priya Sharma",
+    "category": "ML",
+    "categoryColor": "bg-purple-200",
+    "readTime": "12 min read",
+    "date": "28 Apr, 2026",
+    "url": "",
+    "description": "Step-by-step walkthrough of dataset prep, LoRA fine-tuning, and evaluation on Hugging Face."
+  },
+  {
+    "id": "b4",
+    "title": "Research 101: How to Read Your First Academic Paper",
+    "type": "blog",
+    "author": "Vikram Patel",
+    "category": "Research",
+    "categoryColor": "bg-emerald-200",
+    "readTime": "7 min read",
+    "date": "25 Apr, 2026",
+    "url": "",
+    "description": "Breaking down the structure of research papers and techniques to extract insights quickly."
+  },
+  {
+    "id": "b5",
+    "title": "Mastering Segment Trees for Competitive Programming",
+    "type": "blog",
+    "author": "Meera Joshi",
+    "category": "CP",
+    "categoryColor": "bg-orange-200",
+    "readTime": "20 min read",
+    "date": "22 Apr, 2026",
+    "url": "",
+    "description": "Range queries, lazy propagation, and advanced tree techniques explained with problems."
+  },
+  {
+    "id": "b6",
+    "title": "DevOps in 2026: GitOps, Platform Engineering & Beyond",
+    "type": "blog",
+    "author": "Karan Singh",
+    "category": "Dev",
+    "categoryColor": "bg-blue-200",
+    "readTime": "10 min read",
+    "date": "20 Apr, 2026",
+    "url": "",
+    "description": "The shifting landscape of infrastructure automation and developer experience."
+  },
+  {
+    "id": "b7",
+    "title": "Graph Neural Networks: Theory and Applications",
+    "type": "blog",
+    "author": "Arjun Mehta",
+    "category": "ML",
+    "categoryColor": "bg-purple-200",
+    "readTime": "22 min read",
+    "date": "18 Apr, 2026",
+    "url": "",
+    "description": "How GNNs are revolutionizing molecule discovery and social network analysis."
+  },
+  {
+    "id": "b8",
+    "title": "React Server Components: The Complete Guide",
+    "type": "blog",
+    "author": "Ananya Das",
+    "category": "Dev",
+    "categoryColor": "bg-blue-200",
+    "readTime": "15 min read",
+    "date": "15 Apr, 2026",
+    "url": "",
+    "description": "How RSC changes the mental model of data fetching in React apps."
+  }
+]
