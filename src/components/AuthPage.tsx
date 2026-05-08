@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Terminal, Mail, Lock, User, ArrowLeft, Shield, CheckCircle, AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
 import {
   auth,
@@ -21,6 +21,13 @@ function validateIGDTUWEmail(email: string): string | null {
   if (!localPart || localPart.length < 2) return 'Enter a valid IGDTUW email';
   if (!/^[a-zA-Z0-9._-]+$/.test(localPart)) return 'Email contains invalid characters';
   return null;
+}
+
+/** Allows redirect after login to same-origin paths only (e.g. /discord). */
+function safeInternalPath(from: unknown): string | null {
+  if (typeof from !== 'string' || !from.startsWith('/')) return null;
+  if (from.startsWith('//')) return null;
+  return from;
 }
 
 function validatePassword(password: string): string | null {
@@ -47,6 +54,9 @@ const AuthPage: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const postAuthPath =
+    safeInternalPath((location.state as { from?: string } | null)?.from) ?? '/';
   const checkIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -54,14 +64,14 @@ const AuthPage: React.FC = () => {
       setCurrentUser(user);
       if (user?.emailVerified) {
         if (checkIntervalRef.current) clearInterval(checkIntervalRef.current);
-        navigate('/');
+        navigate(postAuthPath);
       }
     });
     return () => {
       unsub();
       if (checkIntervalRef.current) clearInterval(checkIntervalRef.current);
     };
-  }, [navigate]);
+  }, [navigate, postAuthPath]);
 
   const startVerificationPolling = () => {
     if (checkIntervalRef.current) clearInterval(checkIntervalRef.current);
@@ -70,7 +80,7 @@ const AuthPage: React.FC = () => {
         await auth.currentUser.reload();
         if (auth.currentUser.emailVerified) {
           clearInterval(checkIntervalRef.current!);
-          navigate('/');
+          navigate(postAuthPath);
         }
       }
     }, 3000);
@@ -127,7 +137,7 @@ const AuthPage: React.FC = () => {
         setVerificationSent(true);
         startVerificationPolling();
       } else {
-        navigate('/');
+        navigate(postAuthPath);
       }
     } catch (err: any) {
       if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {

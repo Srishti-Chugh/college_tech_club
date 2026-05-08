@@ -1,5 +1,7 @@
 /// <reference types="vite/client" />
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
+import { useSearchParams, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type InputMode = "url" | "file";
@@ -394,6 +396,8 @@ const KaggleSection: React.FC = () => {
 
 /** Blog2Code Tool */
 const Blog2CodeTool: React.FC = () => {
+  const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [mode, setMode] = useState<InputMode>("url");
   const [url, setUrl] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -404,6 +408,22 @@ const Blog2CodeTool: React.FC = () => {
   const [repoName, setRepoName] = useState("generated-repo");
   const fileRef = useRef<HTMLInputElement>(null);
   const fakeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    const raw = searchParams.get("url");
+    if (!raw?.trim()) return;
+    let decoded = raw.trim();
+    try {
+      decoded = decodeURIComponent(decoded);
+    } catch {
+      /* keep trimmed raw */
+    }
+    setUrl(decoded);
+    const next = new URLSearchParams(searchParams);
+    next.delete("url");
+    setSearchParams(next, { replace: true });
+  }, [user, searchParams, setSearchParams]);
 
   const runFakeProgress = useCallback((onDone: () => void) => {
     let i = 0; setStageIdx(0);
@@ -425,6 +445,7 @@ const Blog2CodeTool: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    if (!user) return;
     setError(""); setZipBlob(null);
     if (mode === "url" && !url.trim()) return;
     if (mode === "file" && !file) return;
@@ -463,7 +484,8 @@ const Blog2CodeTool: React.FC = () => {
   };
 
   const isRunning = stage==="uploading"||stage==="processing";
-  const canSubmit = !isRunning && (mode==="url" ? url.trim()!=="" : file!==null);
+  const hasInput = mode==="url" ? url.trim()!=="" : file!==null;
+  const canSubmit = !isRunning && !!user && hasInput;
 
   return (
     <section className="ml-tool-section">
@@ -557,6 +579,12 @@ const Blog2CodeTool: React.FC = () => {
               </div>
             )}
 
+            {!user && (
+              <p className="ml-signin-hint">
+                <Link to="/join" state={{ from: '/ml/blog2code' }}>Sign in</Link>
+                {' '}to generate a repository from your blog URL or file.
+              </p>
+            )}
             <button className="ml-submit" disabled={!canSubmit} onClick={handleSubmit}>
               <span>Generate Repository</span>
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -1012,6 +1040,16 @@ const CSS = `
     box-shadow: 0 8px 28px rgba(124,111,255,.3);
   }
   .ml-submit:disabled { opacity: .3; cursor: not-allowed; }
+
+  .ml-signin-hint {
+    font-family: var(--mono); font-size: .78rem; color: var(--muted);
+    text-align: center; margin: 0 0 1rem; line-height: 1.45;
+  }
+  .ml-signin-hint a {
+    color: var(--violet); font-weight: 600; text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .ml-signin-hint a:hover { color: #a5b4fc; }
 
   /* Processing */
   .ml-processing { display: flex; flex-direction: column; gap: 0; }

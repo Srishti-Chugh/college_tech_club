@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import FeaturedBlogs from './components/FeaturedBlogs';
@@ -15,6 +16,25 @@ import ExplorePage from './components/ExplorePage';
 import IntroAnimation from './components/IntroAnimation';
 import AuthPage from './components/AuthPage';
 import DiscordPage from './components/DiscordPage';
+
+const DiscordRoute: React.FC = () => {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) {
+    return (
+      <div className="min-h-[50vh] flex items-center justify-center text-sm text-black/40 pt-28">
+        Loading…
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/join" replace state={{ from: location.pathname }} />;
+  }
+
+  return <DiscordPage />;
+};
 
 const Home: React.FC<{ introComplete: boolean }> = ({ introComplete }) => (
   <>
@@ -55,7 +75,7 @@ const App: React.FC = () => {
           <Route path="/events" element={<EventsPage />} />
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="/join" element={<AuthPage />} />
-          <Route path="/discord" element={<DiscordPage />} />
+          <Route path="/discord" element={<DiscordRoute />} />
           <Route path="/resources/development" element={<DevelopmentResources />} />
           <Route path="/resources/cp-roadmap" element={<CPRoadmap />} />
           <Route path="/ml/blog2code" element={<Blog2CodePage />} />

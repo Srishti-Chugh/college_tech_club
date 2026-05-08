@@ -18,6 +18,19 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID || "YOUR_APP_ID",
 };
 
+const rawKey = import.meta.env.VITE_FIREBASE_API_KEY ?? "";
+const firebaseConfigured =
+  rawKey.length > 0 &&
+  !/^YOUR_/i.test(rawKey) &&
+  !/^your_/i.test(rawKey);
+
+if (import.meta.env.DEV && !firebaseConfigured) {
+  console.warn(
+    "[Firebase] Missing or placeholder VITE_FIREBASE_* in .env.local. " +
+      "Open Firebase Console → Project settings → Your apps → copy the web app config into .env.local, then restart `npm run dev`.",
+  );
+}
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
