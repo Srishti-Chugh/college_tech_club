@@ -2078,14 +2078,14 @@
     display: none;
   }
 
-  .pt-tbl th:nth-child(4),
-  .pt-tbl td:nth-child(4),
-  .pt-table th:nth-child(4),
-  .pt-table td:nth-child(4),
   .pt-tbl th:nth-child(5),
   .pt-tbl td:nth-child(5),
   .pt-table th:nth-child(5),
-  .pt-table td:nth-child(5) {
+  .pt-table td:nth-child(5),
+  .pt-tbl th:nth-child(6),
+  .pt-tbl td:nth-child(6),
+  .pt-table th:nth-child(6),
+  .pt-table td:nth-child(6) {
     display: none;
   }
 
@@ -2111,4 +2111,117 @@ button.cp-roadmap-hero-back:hover {
   color: #4f46e5 !important;
   background: rgba(12, 12, 29, .06) !important;
   border-color: rgba(99, 102, 241, .3) !important;
+}
+
+/* ── DSA practice progress (hero + tables) ─────────────────────────────── */
+.dsa-hero-progress {
+  width: 100%;
+  max-width: 420px;
+  margin: 1.5rem auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.dsa-hero-progress--inline {
+  margin: 0.85rem 0 0;
+  max-width: 360px;
+  align-self: flex-start;
+}
+
+.ll-header .dsa-hero-progress,
+.tp-header .dsa-hero-progress,
+.gp-header .dsa-hero-progress,
+.sq-header .dsa-hero-progress {
+  margin-top: 1.35rem;
+}
+
+.dsa-hero-progress-bar {
+  width: 100%;
+  height: 6px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.ap-header .dsa-hero-progress-bar {
+  background: rgba(250, 204, 21, 0.12);
+}
+
+.dsa-hero-progress-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, var(--mag-indigo), #818cf8);
+  transition: width 0.35s ease;
+}
+
+.dsa-hero-progress-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  text-align: center;
+}
+
+.dsa-hero-progress--inline .dsa-hero-progress-meta {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.dsa-hero-progress-label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.ap-header .dsa-hero-progress-label {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.dsa-persist-hint {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.ap-header .dsa-persist-hint {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.pt-th-done {
+  width: 52px;
+  text-align: center;
+}
+
+.dsa-done-btn {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.dsa-done-btn:hover {
+  border-color: rgba(250, 204, 21, 0.45);
+  color: var(--mag-yellow);
+}
+
+.dsa-done-btn.on {
+  border-color: rgba(74, 222, 128, 0.45);
+  background: rgba(74, 222, 128, 0.12);
+  color: #4ade80;
+}
+
+.pt-done {
+  width: 52px;
+  text-align: center;
+  vertical-align: middle;
 }

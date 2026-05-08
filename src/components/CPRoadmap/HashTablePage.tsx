@@ -1,6 +1,8 @@
 /// <reference types="vite/client" />
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLearningProgress } from '../../context/LearningProgressContext';
+import { DsaHeroProgressBar, ProblemDoneToggle } from './DsaProgressWidgets';
 import './shared.css';
 
 type HTType = 'chaining' | 'open' | 'set' | 'map';
@@ -48,8 +50,6 @@ const META: Record<HTType, { label: string; color: string; desc: string; cx: [st
     map: { label: 'Hash Map', color: '#c084fc', desc: 'Key → Value store. Each key hashes to a bucket and maps to a value. Core of frequency counting, memoization, and grouping problems.', cx: [['O(1)*', 'Put'], ['O(1)*', 'Get'], ['O(1)*', 'Delete'], ['O(n)', 'Iteration']], icon: '🗺️' },
 };
 
-const StacksQueuesPage: React.FC = () => { return <div />; }; // placeholder — not used
-
 const HashTablePage: React.FC = () => {
     const navigate = useNavigate();
     const [htType, setHtType] = useState<HTType>('chaining');
@@ -64,6 +64,9 @@ const HashTablePage: React.FC = () => {
     const [filter, setFilter] = useState<'All' | 'Easy' | 'Medium' | 'Hard'>('All');
     const logRef = useRef<HTMLDivElement>(null);
     const meta = META[htType];
+    const { dsaCompletedInList, loading: progLoading } = useLearningProgress();
+    const probUrls = PROBS.map((p) => p.url);
+    const doneProblems = dsaCompletedInList('hashTables', probUrls);
 
     useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight; }, [log]);
     useEffect(() => {
@@ -198,6 +201,7 @@ const HashTablePage: React.FC = () => {
                 <h1 className="ht-title" style={{ backgroundImage: `linear-gradient(135deg,#fff 30%,${C})` }}>{meta.icon} Hash Tables</h1>
                 <p className="ht-sub">{meta.desc}</p>
                 <div className="ht-stats">{meta.cx.map(([c, l]) => <div className="ht-stat" key={l}><span style={{ color: C, fontSize: '.95rem', fontWeight: 600 }}>{c}</span><span style={{ fontSize: '.65rem', color: 'rgba(255,255,255,.32)' }}>{l}</span></div>)}</div>
+                <DsaHeroProgressBar done={doneProblems} total={PROBS.length} accent={C} loading={progLoading} />
             </header>
 
             <section className="pg-wrap">
@@ -333,12 +337,13 @@ const HashTablePage: React.FC = () => {
             </section>
 
             <section className="pt-wrap">
-                <div className="pt-hdr"><div><h2 className="pt-title">Practice Problems</h2><p className="pt-sub">{PROBS.length} curated Hash Table problems</p></div>
+                <div className="pt-hdr"><div><h2 className="pt-title">Practice Problems</h2><p className="pt-sub">{PROBS.length} curated Hash Table problems</p>
+                    <DsaHeroProgressBar variant="inline" done={doneProblems} total={PROBS.length} accent={C} loading={progLoading} /></div>
                     <div className="pt-counts"><span className="ptc easy">{counts.Easy} Easy</span><span className="ptc medium">{counts.Medium} Medium</span><span className="ptc hard">{counts.Hard} Hard</span></div></div>
                 <div className="pt-filters">{(['All', 'Easy', 'Medium', 'Hard'] as const).map(f => <button key={f} className={`pt-f${filter === f ? ' active ' + f.toLowerCase() : ''}`} onClick={() => setFilter(f)}>{f}{f !== 'All' && <span className="pt-fc">{counts[f as keyof typeof counts]}</span>}</button>)}</div>
                 <div className="pt-tw"><table className="pt-tbl">
-                    <thead><tr><th>#</th><th>Problem</th><th>Difficulty</th><th>Pattern</th><th>Acceptance</th><th></th></tr></thead>
-                    <tbody>{filtered.map((p, i) => <tr key={p.title} className="pt-row"><td className="pt-num">{i + 1}</td><td className="pt-name">{p.title}</td><td><span className={`pt-diff ${p.difficulty.toLowerCase()}`}>{p.difficulty}</span></td><td className="pt-topic">{p.topic}</td><td className="pt-acc">{p.acceptance}</td><td><a href={p.url} target="_blank" rel="noopener noreferrer" className="pt-solve">Solve →</a></td></tr>)}</tbody>
+                    <thead><tr><th>#</th><th className="pt-th-done">Done</th><th>Problem</th><th>Difficulty</th><th>Pattern</th><th>Acceptance</th><th></th></tr></thead>
+                    <tbody>{filtered.map((p, i) => <tr key={p.title} className="pt-row"><td className="pt-num">{i + 1}</td><td className="pt-done"><ProblemDoneToggle trackId="hashTables" url={p.url} /></td><td className="pt-name">{p.title}</td><td><span className={`pt-diff ${p.difficulty.toLowerCase()}`}>{p.difficulty}</span></td><td className="pt-topic">{p.topic}</td><td className="pt-acc">{p.acceptance}</td><td><a href={p.url} target="_blank" rel="noopener noreferrer" className="pt-solve">Solve →</a></td></tr>)}</tbody>
                 </table></div>
             </section>
         </div>

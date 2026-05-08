@@ -1,6 +1,8 @@
 /// <reference types="vite/client" />
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLearningProgress } from '../../context/LearningProgressContext';
+import { DsaHeroProgressBar, ProblemDoneToggle } from './DsaProgressWidgets';
 import './shared.css';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -168,6 +170,9 @@ const GraphsPage: React.FC = () => {
     const cfg = GRAPHS[gType];
     const N = cfg.nodes.length;
     const C = cfg.color;
+    const { dsaCompletedInList, loading: progLoading } = useLearningProgress();
+    const probUrls = PROBLEMS.map((p) => p.url);
+    const doneProblems = dsaCompletedInList('graphs', probUrls);
 
     useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight; }, [log]);
 
@@ -490,6 +495,7 @@ const GraphsPage: React.FC = () => {
                         </div>
                     ))}
                 </div>
+                <DsaHeroProgressBar done={doneProblems} total={PROBLEMS.length} accent={C} loading={progLoading} />
             </header>
 
             {/* ═══════════════════════ PLAYGROUND ══════════════════════════ */}
@@ -693,6 +699,7 @@ const GraphsPage: React.FC = () => {
                     <div>
                         <h2 className="pt-title">Practice Problems</h2>
                         <p className="pt-sub">{PROBLEMS.length} curated Graph problems on LeetCode</p>
+                        <DsaHeroProgressBar variant="inline" done={doneProblems} total={PROBLEMS.length} accent={C} loading={progLoading} />
                     </div>
                     <div className="pt-counts">
                         <span className="ptc easy">{counts.Easy} Easy</span>
@@ -709,11 +716,12 @@ const GraphsPage: React.FC = () => {
                 </div>
                 <div className="pt-tw">
                     <table className="pt-tbl">
-                        <thead><tr><th>#</th><th>Problem</th><th>Difficulty</th><th>Pattern</th><th>Acceptance</th><th></th></tr></thead>
+                        <thead><tr><th>#</th><th className="pt-th-done">Done</th><th>Problem</th><th>Difficulty</th><th>Pattern</th><th>Acceptance</th><th></th></tr></thead>
                         <tbody>
                             {filtered.map((p, i) => (
                                 <tr key={p.title} className="pt-row">
                                     <td className="pt-num">{i + 1}</td>
+                                    <td className="pt-done"><ProblemDoneToggle trackId="graphs" url={p.url} /></td>
                                     <td className="pt-name">{p.title}</td>
                                     <td><span className={`pt-diff ${p.difficulty.toLowerCase()}`}>{p.difficulty}</span></td>
                                     <td className="pt-topic">{p.topic}</td>

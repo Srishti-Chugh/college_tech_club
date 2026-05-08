@@ -1,6 +1,8 @@
 /// <reference types="vite/client" />
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLearningProgress } from '../../context/LearningProgressContext';
+import { DsaHeroProgressBar, ProblemDoneToggle } from './DsaProgressWidgets';
 import './shared.css';
 
 type SQType = 'stack' | 'queue' | 'deque' | 'monotonic';
@@ -145,6 +147,9 @@ const StacksQueuesPage: React.FC = () => {
     const [filter, setFilter] = useState<'All' | 'Easy' | 'Medium' | 'Hard'>('All');
     const logRef = useRef<HTMLDivElement>(null);
     const meta = META[sqType];
+    const { dsaCompletedInList, loading: progLoading } = useLearningProgress();
+    const probUrls = PROBS.map((p) => p.url);
+    const doneProblems = dsaCompletedInList('stacksQueues', probUrls);
 
     useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight; }, [log]);
     useEffect(() => { setNodes(defaultNodes()); setMonoStack([]); setLog([{ msg: `${meta.label} ready. ${meta.desc}`, type: 'info' }]); setActiveOp(null); setInputVal(''); }, [sqType]);
@@ -200,6 +205,7 @@ const StacksQueuesPage: React.FC = () => {
                 <h1 className="sq-title" style={{ backgroundImage: `linear-gradient(135deg,#fff 30%,${meta.color})` }}>{meta.icon} Stacks &amp; Queues</h1>
                 <p className="sq-sub">{meta.desc}</p>
                 <div className="sq-stats">{meta.cx.map(([c, l]) => <div className="sq-stat" key={l}><span className="sq-sc" style={{ color: meta.color }}>{c}</span><span className="sq-sl">{l}</span></div>)}</div>
+                <DsaHeroProgressBar done={doneProblems} total={PROBS.length} accent={meta.color} loading={progLoading} />
             </header>
 
             <section className="pg-wrap">
@@ -266,12 +272,13 @@ const StacksQueuesPage: React.FC = () => {
             </section>
 
             <section className="pt-wrap">
-                <div className="pt-hdr"><div><h2 className="pt-title">Practice Problems</h2><p className="pt-sub">{PROBS.length} curated Stack &amp; Queue problems</p></div>
+                <div className="pt-hdr"><div><h2 className="pt-title">Practice Problems</h2><p className="pt-sub">{PROBS.length} curated Stack &amp; Queue problems</p>
+                    <DsaHeroProgressBar variant="inline" done={doneProblems} total={PROBS.length} accent={meta.color} loading={progLoading} /></div>
                     <div className="pt-counts"><span className="ptc easy">{counts.Easy} Easy</span><span className="ptc medium">{counts.Medium} Medium</span><span className="ptc hard">{counts.Hard} Hard</span></div></div>
                 <div className="pt-filters">{(['All', 'Easy', 'Medium', 'Hard'] as const).map(f => <button key={f} className={`pt-f${filter === f ? ' active ' + f.toLowerCase() : ''}`} onClick={() => setFilter(f)}>{f}{f !== 'All' && <span className="pt-fc">{counts[f as keyof typeof counts]}</span>}</button>)}</div>
                 <div className="pt-tw"><table className="pt-tbl">
-                    <thead><tr><th>#</th><th>Problem</th><th>Difficulty</th><th>Pattern</th><th>Acceptance</th><th></th></tr></thead>
-                    <tbody>{filtered.map((p, i) => <tr key={p.title} className="pt-row"><td className="pt-num">{i + 1}</td><td className="pt-name">{p.title}</td><td><span className={`pt-diff ${p.difficulty.toLowerCase()}`}>{p.difficulty}</span></td><td className="pt-topic">{p.topic}</td><td className="pt-acc">{p.acceptance}</td><td><a href={p.url} target="_blank" rel="noopener noreferrer" className="pt-solve">Solve →</a></td></tr>)}</tbody>
+                    <thead><tr><th>#</th><th className="pt-th-done">Done</th><th>Problem</th><th>Difficulty</th><th>Pattern</th><th>Acceptance</th><th></th></tr></thead>
+                    <tbody>{filtered.map((p, i) => <tr key={p.title} className="pt-row"><td className="pt-num">{i + 1}</td><td className="pt-done"><ProblemDoneToggle trackId="stacksQueues" url={p.url} /></td><td className="pt-name">{p.title}</td><td><span className={`pt-diff ${p.difficulty.toLowerCase()}`}>{p.difficulty}</span></td><td className="pt-topic">{p.topic}</td><td className="pt-acc">{p.acceptance}</td><td><a href={p.url} target="_blank" rel="noopener noreferrer" className="pt-solve">Solve →</a></td></tr>)}</tbody>
                 </table></div>
             </section>
         </div>

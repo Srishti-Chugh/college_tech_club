@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLearningProgress } from '../../context/LearningProgressContext';
 import './shared.css';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
@@ -322,19 +323,15 @@ const TOPIC_ROUTES: Record<string, string> = {
 const CPRoadmap: React.FC = () => {
     const navigate = useNavigate();
     const [activeTopic, setActiveTopic] = useState<Topic | null>(null);
-    const [completedIds, setCompletedIds] = useState<Set<string>>(new Set());
+    const { cpTopicIds, toggleCpTopic, loading: progressLoading } = useLearningProgress();
 
     const toggleComplete = (id: string, e: React.MouseEvent) => {
         e.stopPropagation();
-        setCompletedIds(prev => {
-            const next = new Set(prev);
-            next.has(id) ? next.delete(id) : next.add(id);
-            return next;
-        });
+        toggleCpTopic(id);
     };
 
     const totalTopics = ROADMAP.reduce((acc, s) => acc + s.topics.length, 0);
-    const progress = Math.round((completedIds.size / totalTopics) * 100);
+    const progress = Math.round((cpTopicIds.size / totalTopics) * 100);
 
     return (
         <div style={styles.root}>
@@ -360,7 +357,9 @@ const CPRoadmap: React.FC = () => {
                         <div style={styles.progressBar}>
                             <div style={{ ...styles.progressFill, width: `${progress}%` }} />
                         </div>
-                        <span style={styles.progressLabel}>{completedIds.size} / {totalTopics} topics completed</span>
+                        <span style={styles.progressLabel}>
+                            {progressLoading ? 'Loading progress…' : `${cpTopicIds.size} / ${totalTopics} topics completed`}
+                        </span>
                     </div>
 
                     <div style={styles.legend}>
@@ -402,7 +401,7 @@ const CPRoadmap: React.FC = () => {
                         {/* topics grid */}
                         <div style={styles.topicsGrid}>
                             {section.topics.map((topic) => {
-                                const done = completedIds.has(topic.id);
+                                const done = cpTopicIds.has(topic.id);
                                 const tag = TAG_STYLE[topic.tag];
                                 return (
                                     <div
@@ -491,11 +490,11 @@ const CPRoadmap: React.FC = () => {
                             onClick={(e) => { toggleComplete(activeTopic.id, e); setActiveTopic(null); }}
                             style={{
                                 ...styles.modalDoneBtn,
-                                background: completedIds.has(activeTopic.id) ? 'rgba(255,255,255,0.08)' : '#6cffb4',
-                                color: completedIds.has(activeTopic.id) ? 'rgba(255,255,255,0.6)' : '#0d0d12',
+                                background: cpTopicIds.has(activeTopic.id) ? 'rgba(255,255,255,0.08)' : '#6cffb4',
+                                color: cpTopicIds.has(activeTopic.id) ? 'rgba(255,255,255,0.6)' : '#0d0d12',
                             }}
                         >
-                            {completedIds.has(activeTopic.id) ? '✓ Completed — Mark Incomplete' : 'Mark as Completed'}
+                            {cpTopicIds.has(activeTopic.id) ? '✓ Completed — Mark Incomplete' : 'Mark as Completed'}
                         </button>
                     </div>
                 </div>

@@ -1,6 +1,8 @@
 /// <reference types="vite/client" />
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLearningProgress } from '../../context/LearningProgressContext';
+import { DsaHeroProgressBar, ProblemDoneToggle } from './DsaProgressWidgets';
 import './shared.css';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -295,6 +297,9 @@ const Visualizer: React.FC<VisualizerProps> = ({ nodes, llType, color }) => {
 // ─── Main Component ───────────────────────────────────────────────────────────
 const LinkedListPage: React.FC = () => {
     const navigate = useNavigate();
+    const { dsaCompletedInList, loading: progLoading } = useLearningProgress();
+    const probUrls = PROBLEMS.map((p) => p.url);
+    const doneProblems = dsaCompletedInList('linkedLists', probUrls);
 
     const [llType, setLLType] = useState<LLType>('singly');
     const [nodes, setNodes] = useState<LLNode[]>(defaultList);
@@ -529,6 +534,7 @@ const LinkedListPage: React.FC = () => {
                         </div>
                     ))}
                 </div>
+                <DsaHeroProgressBar done={doneProblems} total={PROBLEMS.length} accent={meta.color} loading={progLoading} />
                 {/* Features */}
                 <div className="ll-features">
                     {meta.features.map(f => (
@@ -718,6 +724,7 @@ const LinkedListPage: React.FC = () => {
                     <div>
                         <h2 className="pt-title">Practice Problems</h2>
                         <p className="pt-sub">{PROBLEMS.length} curated Linked List problems on LeetCode</p>
+                        <DsaHeroProgressBar variant="inline" done={doneProblems} total={PROBLEMS.length} accent={meta.color} loading={progLoading} />
                     </div>
                     <div className="pt-counts">
                         <span className="pt-cnt easy">{counts.Easy} Easy</span>
@@ -734,11 +741,12 @@ const LinkedListPage: React.FC = () => {
                 </div>
                 <div className="pt-tbl-wrap">
                     <table className="pt-tbl">
-                        <thead><tr><th>#</th><th>Problem</th><th>Difficulty</th><th>Pattern</th><th>Acceptance</th><th></th></tr></thead>
+                        <thead><tr><th>#</th><th className="pt-th-done">Done</th><th>Problem</th><th>Difficulty</th><th>Pattern</th><th>Acceptance</th><th></th></tr></thead>
                         <tbody>
                             {filtered.map((p, i) => (
                                 <tr key={p.title} className="pt-row">
                                     <td className="pt-num">{i + 1}</td>
+                                    <td className="pt-done"><ProblemDoneToggle trackId="linkedLists" url={p.url} /></td>
                                     <td className="pt-name">{p.title}</td>
                                     <td><span className={`pt-diff ${p.difficulty.toLowerCase()}`}>{p.difficulty}</span></td>
                                     <td className="pt-topic">{p.topic}</td>

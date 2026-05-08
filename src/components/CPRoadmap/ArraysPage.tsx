@@ -1,6 +1,8 @@
 /// <reference types="vite/client" />
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLearningProgress } from '../../context/LearningProgressContext';
+import { DsaHeroProgressBar, ProblemDoneToggle } from './DsaProgressWidgets';
 import './shared.css';
 
 // ─── Types ─────────────────────────────────────────────────────────────────
@@ -73,6 +75,9 @@ interface LogEntry { msg: string; type: 'success' | 'error' | 'info' }
 // ─── Main Component ─────────────────────────────────────────────────────────
 const ArraysPage: React.FC = () => {
     const navigate = useNavigate();
+    const { dsaCompletedInList, loading: progLoading } = useLearningProgress();
+    const probUrls = PROBLEMS.map((p) => p.url);
+    const doneProblems = dsaCompletedInList('arrays', probUrls);
     const [cells, setCells] = useState<ArrayCell[]>(initCells());
     const [inputVal, setInputVal] = useState('');
     const [inputIdx, setInputIdx] = useState('');
@@ -209,6 +214,7 @@ const ArraysPage: React.FC = () => {
                         <div className="ap-stat" key={l}><span className="ap-stat-code">{c}</span><span className="ap-stat-label">{l}</span></div>
                     ))}
                 </div>
+                <DsaHeroProgressBar done={doneProblems} total={PROBLEMS.length} accent="#6366f1" loading={progLoading} />
             </header>
 
             {/* ══════════════════════════════════════════════════════════════
@@ -337,6 +343,7 @@ const ArraysPage: React.FC = () => {
                     <div>
                         <h2 className="pt-title">Practice Problems</h2>
                         <p className="pt-sub">{PROBLEMS.length} curated Array problems on LeetCode</p>
+                        <DsaHeroProgressBar variant="inline" done={doneProblems} total={PROBLEMS.length} accent="#6366f1" loading={progLoading} />
                     </div>
                     <div className="pt-counts">
                         <span className="pt-count easy">{counts.Easy} Easy</span>
@@ -360,6 +367,7 @@ const ArraysPage: React.FC = () => {
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th className="pt-th-done">Done</th>
                                 <th>Problem</th>
                                 <th>Difficulty</th>
                                 <th>Pattern / Topic</th>
@@ -371,6 +379,7 @@ const ArraysPage: React.FC = () => {
                             {filtered.map((p, i) => (
                                 <tr key={p.title} className="pt-row">
                                     <td className="pt-num">{i + 1}</td>
+                                    <td className="pt-done"><ProblemDoneToggle trackId="arrays" url={p.url} /></td>
                                     <td className="pt-name">{p.title}</td>
                                     <td>
                                         <span className={`pt-diff ${p.difficulty.toLowerCase()}`}>{p.difficulty}</span>

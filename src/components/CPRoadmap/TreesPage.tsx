@@ -1,6 +1,8 @@
 /// <reference types="vite/client" />
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLearningProgress } from '../../context/LearningProgressContext';
+import { DsaHeroProgressBar, ProblemDoneToggle } from './DsaProgressWidgets';
 import './shared.css';
 
 // ─── Tree Types ───────────────────────────────────────────────────────────────
@@ -415,6 +417,9 @@ const TREE_META: Record<TreeType, { label: string; color: string; desc: string; 
 // ─── Main Component ───────────────────────────────────────────────────────────
 const TreesPage: React.FC = () => {
     const navigate = useNavigate();
+    const { dsaCompletedInList, loading: progLoading } = useLearningProgress();
+    const probUrls = PROBLEMS.map((p) => p.url);
+    const doneProblems = dsaCompletedInList('trees', probUrls);
     const svgContainerRef = useRef<HTMLDivElement>(null);
     const [svgW, setSvgW] = useState(700);
 
@@ -576,6 +581,7 @@ const TreesPage: React.FC = () => {
                         </div>
                     ))}
                 </div>
+                <DsaHeroProgressBar done={doneProblems} total={PROBLEMS.length} accent={meta.color} loading={progLoading} />
             </header>
 
             {/* ══ PLAYGROUND ══ */}
@@ -755,6 +761,7 @@ const TreesPage: React.FC = () => {
                     <div>
                         <h2 className="pt-title">Practice Problems</h2>
                         <p className="pt-sub">{PROBLEMS.length} curated Tree problems on LeetCode</p>
+                        <DsaHeroProgressBar variant="inline" done={doneProblems} total={PROBLEMS.length} accent={meta.color} loading={progLoading} />
                     </div>
                     <div className="pt-counts">
                         <span className="pt-count easy">{counts.Easy} Easy</span>
@@ -771,11 +778,12 @@ const TreesPage: React.FC = () => {
                 </div>
                 <div className="pt-table-wrap">
                     <table className="pt-table">
-                        <thead><tr><th>#</th><th>Problem</th><th>Difficulty</th><th>Pattern</th><th>Acceptance</th><th></th></tr></thead>
+                        <thead><tr><th>#</th><th className="pt-th-done">Done</th><th>Problem</th><th>Difficulty</th><th>Pattern</th><th>Acceptance</th><th></th></tr></thead>
                         <tbody>
                             {filtered.map((p, i) => (
                                 <tr key={p.title} className="pt-row">
                                     <td className="pt-num">{i + 1}</td>
+                                    <td className="pt-done"><ProblemDoneToggle trackId="trees" url={p.url} /></td>
                                     <td className="pt-name">{p.title}</td>
                                     <td><span className={`pt-diff ${p.difficulty.toLowerCase()}`}>{p.difficulty}</span></td>
                                     <td className="pt-topic">{p.topic}</td>
