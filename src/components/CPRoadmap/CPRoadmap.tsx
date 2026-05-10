@@ -323,10 +323,11 @@ const TOPIC_ROUTES: Record<string, string> = {
 const CPRoadmap: React.FC = () => {
     const navigate = useNavigate();
     const [activeTopic, setActiveTopic] = useState<Topic | null>(null);
-    const { cpTopicIds, toggleCpTopic, loading: progressLoading } = useLearningProgress();
+    const { cpTopicIds, toggleCpTopic, loading: progressLoading, canTrackProgress } = useLearningProgress();
 
     const toggleComplete = (id: string, e: React.MouseEvent) => {
         e.stopPropagation();
+        if (!canTrackProgress) return;
         toggleCpTopic(id);
     };
 
@@ -360,6 +361,21 @@ const CPRoadmap: React.FC = () => {
                         <span style={styles.progressLabel}>
                             {progressLoading ? 'Loading progress…' : `${cpTopicIds.size} / ${totalTopics} topics completed`}
                         </span>
+                        {!progressLoading && !canTrackProgress && (
+                            <span
+                                style={{
+                                    display: 'block',
+                                    marginTop: '0.45rem',
+                                    fontSize: '.72rem',
+                                    fontFamily: "'JetBrains Mono', monospace",
+                                    color: 'rgba(255,255,255,0.42)',
+                                    letterSpacing: '0.06em',
+                                    textTransform: 'uppercase',
+                                }}
+                            >
+                                Sign in to save roadmap progress
+                            </span>
+                        )}
                     </div>
 
                     <div style={styles.legend}>
@@ -418,12 +434,22 @@ const CPRoadmap: React.FC = () => {
                                                 {tag.label}
                                             </span>
                                             <button
+                                                type="button"
                                                 onClick={(e) => toggleComplete(topic.id, e)}
-                                                title={done ? 'Mark incomplete' : 'Mark complete'}
+                                                title={
+                                                    !canTrackProgress
+                                                        ? 'Sign in to track topic completion'
+                                                        : done
+                                                          ? 'Mark incomplete'
+                                                          : 'Mark complete'
+                                                }
+                                                disabled={!canTrackProgress}
                                                 style={{
                                                     ...styles.checkBtn,
                                                     background: done ? section.color : 'transparent',
                                                     borderColor: done ? section.color : 'rgba(255,255,255,0.2)',
+                                                    opacity: canTrackProgress ? 1 : 0.38,
+                                                    cursor: canTrackProgress ? 'pointer' : 'not-allowed',
                                                 }}
                                             >
                                                 {done && (
@@ -486,16 +512,38 @@ const CPRoadmap: React.FC = () => {
                             </>
                         )}
 
-                        <button
-                            onClick={(e) => { toggleComplete(activeTopic.id, e); setActiveTopic(null); }}
-                            style={{
-                                ...styles.modalDoneBtn,
-                                background: cpTopicIds.has(activeTopic.id) ? 'rgba(255,255,255,0.08)' : '#6cffb4',
-                                color: cpTopicIds.has(activeTopic.id) ? 'rgba(255,255,255,0.6)' : '#0d0d12',
-                            }}
-                        >
-                            {cpTopicIds.has(activeTopic.id) ? '✓ Completed — Mark Incomplete' : 'Mark as Completed'}
-                        </button>
+                        {canTrackProgress ? (
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    toggleComplete(activeTopic.id, e);
+                                    setActiveTopic(null);
+                                }}
+                                style={{
+                                    ...styles.modalDoneBtn,
+                                    background: cpTopicIds.has(activeTopic.id) ? 'rgba(255,255,255,0.08)' : '#6cffb4',
+                                    color: cpTopicIds.has(activeTopic.id) ? 'rgba(255,255,255,0.6)' : '#0d0d12',
+                                }}
+                            >
+                                {cpTopicIds.has(activeTopic.id) ? '✓ Completed — Mark Incomplete' : 'Mark as Completed'}
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    navigate('/join');
+                                    setActiveTopic(null);
+                                }}
+                                style={{
+                                    ...styles.modalDoneBtn,
+                                    background: 'rgba(255,255,255,0.08)',
+                                    color: 'rgba(255,255,255,0.85)',
+                                    border: '1px solid rgba(255,255,255,0.12)',
+                                }}
+                            >
+                                Sign in to save topic progress
+                            </button>
+                        )}
                     </div>
                 </div>
             )}

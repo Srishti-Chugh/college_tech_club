@@ -24,11 +24,13 @@ import {
 
 export type { DsaTrackId };
 
-type PersistenceMode = 'cloud' | 'local';
+type PersistenceMode = 'cloud' | 'none';
 
 type LearningProgressContextValue = {
   loading: boolean;
   persistence: PersistenceMode;
+  /** Progress edits sync only when signed in */
+  canTrackProgress: boolean;
   cpTopicIds: Set<string>;
   toggleCpTopic: (topicId: string) => void;
   isDsaDone: (track: DsaTrackId, slug: string) => boolean;
@@ -93,7 +95,7 @@ export const LearningProgressProvider: React.FC<{ children: React.ReactNode }> =
     unsubRef.current = undefined;
 
     if (!user) {
-      setLearningState(readLocalProgress());
+      setLearningState(emptyProgress());
       setLoading(false);
       return;
     }
@@ -141,20 +143,22 @@ export const LearningProgressProvider: React.FC<{ children: React.ReactNode }> =
     };
   }, [user?.uid, authLoading]);
 
-  const persistence: PersistenceMode = user ? 'cloud' : 'local';
+  const persistence: PersistenceMode = user ? 'cloud' : 'none';
 
   const toggleCpTopic = useCallback(
     (topicId: string) => {
+      if (!user?.uid) return;
       commit((prev) => ({
         ...prev,
         cpTopicIds: toggleInList(prev.cpTopicIds, topicId),
       }));
     },
-    [commit],
+    [commit, user?.uid],
   );
 
   const toggleDsaProblem = useCallback(
     (track: DsaTrackId, slug: string) => {
+      if (!user?.uid) return;
       commit((prev) => ({
         ...prev,
         dsa: {
@@ -163,7 +167,7 @@ export const LearningProgressProvider: React.FC<{ children: React.ReactNode }> =
         },
       }));
     },
-    [commit],
+    [commit, user?.uid],
   );
 
   const isDsaDone = useCallback(
@@ -187,13 +191,14 @@ export const LearningProgressProvider: React.FC<{ children: React.ReactNode }> =
     () => ({
       loading,
       persistence,
+      canTrackProgress: Boolean(user?.uid),
       cpTopicIds: new Set(learningState.cpTopicIds),
       toggleCpTopic,
       isDsaDone,
       toggleDsaProblem,
       dsaCompletedInList,
     }),
-    [loading, persistence, learningState.cpTopicIds, toggleCpTopic, isDsaDone, toggleDsaProblem, dsaCompletedInList],
+    [loading, persistence, user?.uid, learningState.cpTopicIds, toggleCpTopic, isDsaDone, toggleDsaProblem, dsaCompletedInList],
   );
 
   return <LearningProgressContext.Provider value={value}>{children}</LearningProgressContext.Provider>;

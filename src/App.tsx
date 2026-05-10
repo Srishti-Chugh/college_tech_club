@@ -7,6 +7,7 @@ import FeaturedBlogs from './components/FeaturedBlogs';
 import UpcomingEvents from './components/UpcomingEvents';
 import OurTracks from './components/OurTracks';
 import SubscriptionBanner from './components/SubscriptionBanner';
+import WinsHomeRibbon from './components/WinsHomeRibbon';
 import Footer from './components/Footer';
 import DevelopmentResources from './components/DevelopmentResources';
 import { CPRoadmap, ArraysPage, TreesPage, LinkedListPage, StacksQueuesPage, HeapsPage, HashTablePage, GraphsPage } from './components/CPRoadmap';
@@ -16,14 +17,33 @@ import ExplorePage from './components/ExplorePage';
 import IntroAnimation from './components/IntroAnimation';
 import AuthPage from './components/AuthPage';
 import DiscordPage from './components/DiscordPage';
+import WinsPage from './components/WinsPage';
 
 const DiscordRoute: React.FC = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center text-sm text-white/50 pt-28">
+        Loading…
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/join" replace state={{ from: '/discord' }} />;
+  }
+
+  return <DiscordPage />;
+};
+
+const WinsRoute: React.FC = () => {
   const { user, loading } = useAuth();
   const location = useLocation();
 
   if (loading) {
     return (
-      <div className="min-h-[50vh] flex items-center justify-center text-sm text-black/40 pt-28">
+      <div className="min-h-screen bg-black text-white flex items-center justify-center text-sm text-white/50 pt-28">
         Loading…
       </div>
     );
@@ -33,12 +53,13 @@ const DiscordRoute: React.FC = () => {
     return <Navigate to="/join" replace state={{ from: location.pathname }} />;
   }
 
-  return <DiscordPage />;
+  return <WinsPage />;
 };
 
 const Home: React.FC<{ introComplete: boolean }> = ({ introComplete }) => (
   <>
     <Hero introComplete={introComplete} />
+    <WinsHomeRibbon />
     <FeaturedBlogs />
     <UpcomingEvents />
     <OurTracks />
@@ -76,6 +97,7 @@ const App: React.FC = () => {
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="/join" element={<AuthPage />} />
           <Route path="/discord" element={<DiscordRoute />} />
+          <Route path="/wins" element={<WinsRoute />} />
           <Route path="/resources/development" element={<DevelopmentResources />} />
           <Route path="/resources/cp-roadmap" element={<CPRoadmap />} />
           <Route path="/ml/blog2code" element={<Blog2CodePage />} />

@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const DiscordIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
@@ -16,6 +17,8 @@ const CHANNEL_PILLS = [
 ];
 
 const SubscriptionBanner: React.FC = () => {
+  const { user, loading } = useAuth();
+
   return (
     <section className="py-14">
       <div className="container mx-auto px-6">
@@ -60,16 +63,35 @@ const SubscriptionBanner: React.FC = () => {
               ))}
             </div>
 
-            <Link
-              to="/discord"
-              className="bg-white text-[#5865F2] w-fit px-6 py-3 rounded-full flex items-center space-x-3 hover:scale-105 transition-transform group font-bold text-sm uppercase tracking-wide inline-flex"
-            >
-              <DiscordIcon className="w-5 h-5" />
-              <span>Explore Channels</span>
-              <div className="bg-[#5865F2] rounded-full p-1.5 text-white group-hover:rotate-45 transition-transform">
-                <ArrowUpRight size={16} />
-              </div>
-            </Link>
+            {loading ? (
+              <span className="bg-white/80 text-[#5865F2]/60 w-fit px-6 py-3 rounded-full inline-flex items-center space-x-3 font-bold text-sm uppercase tracking-wide cursor-wait">
+                <DiscordIcon className="w-5 h-5 shrink-0" />
+                <span>Loading…</span>
+              </span>
+            ) : user ? (
+              <Link
+                to="/discord"
+                className="bg-white text-[#5865F2] w-fit px-6 py-3 rounded-full flex items-center space-x-3 hover:scale-105 transition-transform group font-bold text-sm uppercase tracking-wide inline-flex"
+              >
+                <DiscordIcon className="w-5 h-5" />
+                <span>Explore Channels</span>
+                <div className="bg-[#5865F2] rounded-full p-1.5 text-white group-hover:rotate-45 transition-transform">
+                  <ArrowUpRight size={16} />
+                </div>
+              </Link>
+            ) : (
+              <Link
+                to="/join"
+                state={{ from: '/discord' }}
+                className="bg-white text-[#5865F2] w-fit px-6 py-3 rounded-full flex items-center space-x-3 hover:scale-105 transition-transform group font-bold text-sm uppercase tracking-wide inline-flex"
+              >
+                <DiscordIcon className="w-5 h-5" />
+                <span>Explore Channels</span>
+                <div className="bg-[#5865F2] rounded-full p-1.5 text-white group-hover:rotate-45 transition-transform">
+                  <ArrowUpRight size={16} />
+                </div>
+              </Link>
+            )}
 
             <div className="border-t border-white/10 pt-4 mt-5">
               <span className="text-[10px] font-black uppercase block mb-1 text-white/50 tracking-widest">

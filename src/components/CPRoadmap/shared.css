@@ -2220,6 +2220,17 @@ button.cp-roadmap-hero-back:hover {
   color: #4ade80;
 }
 
+.dsa-done-btn--guest,
+.dsa-done-btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.dsa-done-btn--guest:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.35);
+}
+
 .pt-done {
   width: 52px;
   text-align: center;

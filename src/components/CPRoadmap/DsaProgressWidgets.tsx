@@ -42,11 +42,12 @@ export function DsaHeroProgressBar({
 
 function PersistenceHint() {
   const { persistence } = useLearningProgress();
+  if (persistence === 'cloud') {
+    return <span className="dsa-persist-hint">Synced to your account</span>;
+  }
   return (
     <span className="dsa-persist-hint">
-      {persistence === 'cloud'
-        ? 'Synced to your account'
-        : 'Saved on this device — sign in to sync'}
+      Sign in to save progress on your account
     </span>
   );
 }
@@ -58,19 +59,29 @@ export function ProblemDoneToggle({
   trackId: DsaTrackId;
   url: string;
 }) {
-  const { isDsaDone, toggleDsaProblem } = useLearningProgress();
+  const { isDsaDone, toggleDsaProblem, canTrackProgress } = useLearningProgress();
   const slug = slugFromLeetcodeUrl(url);
   const done = isDsaDone(trackId, slug);
 
   return (
     <button
       type="button"
-      className={`dsa-done-btn ${done ? 'on' : ''}`}
+      className={`dsa-done-btn ${done ? 'on' : ''} ${!canTrackProgress ? 'dsa-done-btn--guest' : ''}`}
       aria-pressed={done}
-      aria-label={done ? 'Mark problem not done' : 'Mark problem done'}
-      title={done ? 'Done — click to undo' : 'Mark as done'}
+      disabled={!canTrackProgress}
+      aria-label={
+        !canTrackProgress
+          ? 'Sign in to mark problems done'
+          : done
+            ? 'Mark problem not done'
+            : 'Mark problem done'
+      }
+      title={
+        !canTrackProgress ? 'Sign in to track which problems you’ve finished' : done ? 'Done — click to undo' : 'Mark as done'
+      }
       onClick={(e) => {
         e.stopPropagation();
+        if (!canTrackProgress) return;
         toggleDsaProblem(trackId, slug);
       }}
     >

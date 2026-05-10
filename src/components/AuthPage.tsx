@@ -1,11 +1,25 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Terminal, Mail, Lock, User, ArrowLeft, Shield, CheckCircle, AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
+import {
+  Terminal,
+  Mail,
+  Lock,
+  User,
+  ArrowLeft,
+  Shield,
+  CheckCircle,
+  AlertCircle,
+  Eye,
+  EyeOff,
+  Loader2,
+  LogOut,
+} from 'lucide-react';
 import {
   auth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendEmailVerification,
+  signOut,
   onAuthStateChanged,
   type User as FirebaseUser,
 } from '../firebase';
@@ -55,23 +69,31 @@ const AuthPage: React.FC = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const postAuthPath =
-    safeInternalPath((location.state as { from?: string } | null)?.from) ?? '/';
+  const fromState = useMemo(
+    () => safeInternalPath((location.state as { from?: string } | null)?.from),
+    [location.state],
+  );
+  const postAuthPath = fromState ?? '/';
   const checkIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [authResolved, setAuthResolved] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
-      if (user?.emailVerified) {
+      setAuthResolved(true);
+      // Only bounce away from /join when user was sent here from a gated route (e.g. /discord).
+      // Visiting /join from Hero while already signed in should show the account panel instead.
+      if (user?.emailVerified && fromState) {
         if (checkIntervalRef.current) clearInterval(checkIntervalRef.current);
-        navigate(postAuthPath);
+        navigate(fromState);
       }
     });
     return () => {
       unsub();
       if (checkIntervalRef.current) clearInterval(checkIntervalRef.current);
     };
-  }, [navigate, postAuthPath]);
+  }, [navigate, fromState]);
 
   const startVerificationPolling = () => {
     if (checkIntervalRef.current) clearInterval(checkIntervalRef.current);
@@ -172,6 +194,19 @@ const AuthPage: React.FC = () => {
     setError('');
   };
 
+  const handleSignOutFromJoin = async () => {
+    setSigningOut(true);
+    setError('');
+    try {
+      await signOut(auth);
+      setMode('login');
+    } catch {
+      setError('Could not sign out. Try again.');
+    } finally {
+      setSigningOut(false);
+    }
+  };
+
   // ─── Verification screen ───
   if (mode === 'verify-otp') {
     return (
@@ -234,6 +269,73 @@ const AuthPage: React.FC = () => {
               <ArrowLeft size={12} />
               Back to login
             </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!authResolved) {
+    return (
+      <section className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-6 py-20">
+        <Loader2 size={28} className="animate-spin text-indigo-400" aria-hidden />
+        <p className="mt-4 text-xs font-mono text-gray-500 uppercase tracking-widest">Loading session…</p>
+      </section>
+    );
+  }
+
+  if (currentUser?.emailVerified) {
+    return (
+      <section className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-6 py-20">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-5 py-2 mb-6">
+              <Terminal size={14} className="text-green-400" />
+              <span className="text-xs font-mono tracking-wider text-gray-400">// session.active</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tight mb-2">Already signed in</h1>
+            <p className="text-gray-500 font-mono text-sm">You&apos;re using the lab with this account</p>
+          </div>
+
+          <div className="rounded-xl border border-white/10 bg-gray-950 p-6 space-y-5">
+            <div className="flex items-start gap-3 text-sm">
+              <CheckCircle size={18} className="text-green-400 mt-0.5 shrink-0" />
+              <div className="min-w-0">
+                <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">Signed in as</p>
+                <p className="text-white font-mono text-sm break-all">{currentUser.email}</p>
+              </div>
+            </div>
+
+            {error && (
+              <div className="flex items-center gap-2 text-red-400 text-sm font-mono bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3">
+                <AlertCircle size={16} className="shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() => void handleSignOutFromJoin()}
+              disabled={signingOut}
+              className="w-full bg-white/10 border border-white/15 text-white font-bold uppercase tracking-widest text-sm py-3 rounded-lg hover:bg-red-500/15 hover:border-red-500/40 hover:text-red-200 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {signingOut ? <Loader2 size={16} className="animate-spin" /> : <LogOut size={16} />}
+              Sign out
+            </button>
+
+            <p className="text-[11px] text-gray-600 font-mono text-center">
+              After signing out you can log in with a different IGDTUW account.
+            </p>
+          </div>
+
+          <div className="text-center mt-6 space-y-3">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-colors"
+            >
+              <ArrowLeft size={12} />
+              Back to Home
+            </Link>
           </div>
         </div>
       </section>

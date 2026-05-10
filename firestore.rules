@@ -1,8 +1,72 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    /** Moderators — create docs manually: Collection `admins`, Document ID = user's Firebase Auth UID */
+    match /admins/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
     match /users/{userId}/learning/{document=**} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if signedIn() && request.auth.uid == userId;
+    }
+
+    match /wins_posts/{postId} {
+      allow read: if resource.data.hidden == false || isAdmin();
+
+      allow create: if signedIn()
+        && request.resource.data.authorUid == request.auth.uid
+        && request.resource.data.authorEmail == request.auth.token.email
+        && request.resource.data.body is string
+        && request.resource.data.body.size() > 0
+        && request.resource.data.body.size() <= 2000
+        && request.resource.data.hidden == false;
+
+      allow update: if isAdmin();
+      // Authors may delete their own posts (see Delete my win); admins may delete any.
+      allow delete: if isAdmin() || resource.data.authorUid == request.auth.uid;
+
+      match /comments/{commentId} {
+        function parentPost() {
+          return get(/databases/$(database)/documents/wins_posts/$(postId)).data;
+        }
+
+        function parentHidden() {
+          return parentPost().hidden == true;
+        }
+
+        allow read: if isAdmin() || (!parentHidden() && resource.data.hidden == false);
+
+        allow create: if signedIn()
+          && !parentHidden()
+          && request.resource.data.authorUid == request.auth.uid
+          && request.resource.data.authorEmail == request.auth.token.email
+          && request.resource.data.body is string
+          && request.resource.data.body.size() > 0
+          && request.resource.data.body.size() <= 1000
+          && request.resource.data.hidden == false;
+
+        allow update: if isAdmin();
+        // Comment author, post author (thread owner), or admin may delete.
+        allow delete: if isAdmin()
+          || resource.data.authorUid == request.auth.uid
+          || parentPost().authorUid == request.auth.uid;
+      }
+    }
+
+    /** Default deny — only paths defined above are accessible */
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
