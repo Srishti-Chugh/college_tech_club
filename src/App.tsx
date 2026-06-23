@@ -7,7 +7,7 @@ import FeaturedBlogs from './components/FeaturedBlogs';
 import UpcomingEvents from './components/UpcomingEvents';
 import OurTracks from './components/OurTracks';
 import SubscriptionBanner from './components/SubscriptionBanner';
-import WinsHomeRibbon from './components/WinsHomeRibbon';
+import HypeWallRibbon from './components/HypeWallRibbon';
 import Footer from './components/Footer';
 import DevelopmentResources from './components/DevelopmentResources';
 import { CPRoadmap, ArraysPage, TreesPage, LinkedListPage, StacksQueuesPage, HeapsPage, HashTablePage, GraphsPage } from './components/CPRoadmap';
@@ -59,11 +59,17 @@ const WinsRoute: React.FC = () => {
 const Home: React.FC<{ introComplete: boolean }> = ({ introComplete }) => (
   <>
     <Hero introComplete={introComplete} />
-    <WinsHomeRibbon />
-    <FeaturedBlogs />
+    <div className="px-6 md:px-12 lg:px-20">
+      <FeaturedBlogs />
+    </div>
     <UpcomingEvents />
-    <OurTracks />
-    <SubscriptionBanner />
+    <div className="px-6 md:px-12 lg:px-20">
+      <OurTracks />
+    </div>
+    <HypeWallRibbon />
+    <div className="px-6 md:px-12 lg:px-20">
+      <SubscriptionBanner />
+    </div>
   </>
 );
 

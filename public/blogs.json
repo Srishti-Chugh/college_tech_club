@@ -9,6 +9,7 @@
     "readTime": "6 min read",
     "date": "05 May, 2026",
     "url": "",
+    "imageUrl": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=800",
     "description": "A practical roadmap covering platforms, practice strategies, and contest tips for beginners."
   },
   {
@@ -21,6 +22,7 @@
     "readTime": "10 min read",
     "date": "02 May, 2026",
     "url": "",
+    "imageUrl": "https://images.unsplash.com/photo-1555099962-4199c345e5dd?auto=format&fit=crop&q=80&w=800",
     "description": "End-to-end guide from setup to deployment — REST APIs, authentication, and hosting."
   },
   {
@@ -33,6 +35,7 @@
     "readTime": "12 min read",
     "date": "28 Apr, 2026",
     "url": "",
+    "imageUrl": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?auto=format&fit=crop&q=80&w=800",
     "description": "Step-by-step walkthrough of dataset prep, LoRA fine-tuning, and evaluation on Hugging Face."
   },
   {
@@ -45,6 +48,7 @@
     "readTime": "7 min read",
     "date": "25 Apr, 2026",
     "url": "",
+    "imageUrl": "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80&w=800",
     "description": "Breaking down the structure of research papers and techniques to extract insights quickly."
   },
   {
@@ -57,6 +61,7 @@
     "readTime": "20 min read",
     "date": "22 Apr, 2026",
     "url": "",
+    "imageUrl": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80&w=800",
     "description": "Range queries, lazy propagation, and advanced tree techniques explained with problems."
   },
   {
@@ -69,6 +74,7 @@
     "readTime": "10 min read",
     "date": "20 Apr, 2026",
     "url": "",
+    "imageUrl": "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?auto=format&fit=crop&q=80&w=800",
     "description": "The shifting landscape of infrastructure automation and developer experience."
   },
   {
@@ -81,6 +87,7 @@
     "readTime": "22 min read",
     "date": "18 Apr, 2026",
     "url": "",
+    "imageUrl": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&q=80&w=800",
     "description": "How GNNs are revolutionizing molecule discovery and social network analysis."
   },
   {
@@ -93,6 +100,7 @@
     "readTime": "15 min read",
     "date": "15 Apr, 2026",
     "url": "",
+    "imageUrl": "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&q=80&w=800",
     "description": "How RSC changes the mental model of data fetching in React apps."
   }
 ]

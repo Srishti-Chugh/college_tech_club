@@ -72,7 +72,7 @@ const UpcomingEvents: React.FC = () => {
 
   return (
     <section className="py-20 bg-[#f8f8f8]">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-8 md:px-16 lg:px-28">
 
         {/* Section header */}
         <div className="flex items-center justify-between mb-12">
@@ -97,143 +97,89 @@ const UpcomingEvents: React.FC = () => {
             No upcoming events right now — check back soon.
           </p>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {events.map((event, idx) => {
+              const accent = TYPE_ACCENT[event.type] ?? TYPE_ACCENT['Contest'];
+              const { day, month, weekday } = formatDate(event.date);
+              const days = daysUntil(event.date);
+              // Top row (0,1): text LEFT, image RIGHT — Bottom row (2,3): image LEFT, text RIGHT
+              const imageRight = idx < 2;
 
-            {/* ── HERO CARD ── */}
-            {hero && (() => {
-              const accent = TYPE_ACCENT[hero.type] ?? TYPE_ACCENT['Contest'];
-              const { day, month, weekday } = formatDate(hero.date);
-              const days = daysUntil(hero.date);
-
-              return (
-                <div
-                  className="lg:col-span-5 relative rounded-[32px] overflow-hidden cursor-pointer group"
-                  style={{ minHeight: 520 }}
-                  onClick={() => hero.url && window.open(hero.url, '_blank')}
-                >
-                  <img
-                    src={getImage(hero)}
-                    alt={hero.title}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/10" />
-
-                  {/* Top row */}
-                  <div className="absolute top-6 left-6 right-6 flex items-center justify-between">
-                    <span
-                      className="text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full"
-                      style={{ background: accent.bg, color: accent.text }}
-                    >
-                      {hero.type}
-                    </span>
-                    <div className="flex items-center gap-1.5 bg-white/15 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                      <Clock size={10} className="text-white/70" />
-                      <span className="text-[10px] font-black uppercase tracking-widest text-white/90">
-                        {weekday} · {day} {month}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Bottom content */}
-                  <div className="absolute bottom-0 left-0 right-0 p-8">
-                    {days === 0 && <span className="inline-block text-[10px] font-black uppercase tracking-widest text-yellow-400 mb-3">● Today</span>}
-                    {days === 1 && <span className="inline-block text-[10px] font-black uppercase tracking-widest text-yellow-400 mb-3">● Tomorrow</span>}
-                    {days > 1 && days <= 7 && <span className="inline-block text-[10px] font-black uppercase tracking-widest text-white/50 mb-3">● In {days} days</span>}
-
-                    <div className="flex items-center gap-3 mb-4 text-[10px] font-black uppercase tracking-widest text-white/50">
-                      <span className="px-2 py-0.5 rounded" style={{ background: accent.bg, color: accent.text, fontSize: '9px' }}>
-                        {hero.tag}
-                      </span>
-                      <span>{hero.time}</span>
-                    </div>
-
-                    <h3 className="text-2xl md:text-3xl font-black uppercase leading-tight text-white mb-5 group-hover:text-yellow-400 transition-colors duration-300">
-                      {hero.title}
+              const textPanel = (
+                <div className="flex flex-col justify-between p-8 bg-white group-hover:bg-[#fafafa] transition-colors" style={{ minHeight: 260 }}>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-black/30 mb-3">
+                      {event.type}
+                    </p>
+                    <h3 className="text-xl font-black uppercase leading-snug text-black mb-3 group-hover:text-indigo-600 transition-colors line-clamp-3">
+                      {event.title}
                     </h3>
-
-                    {hero.url && (
-                      <button className="bg-white text-black px-5 py-2.5 rounded-full flex items-center gap-2 text-[11px] font-black uppercase tracking-widest hover:bg-yellow-400 transition-colors">
-                        Register Now
-                        <div className="bg-black rounded-full p-1">
-                          <ArrowUpRight size={12} className="text-white" />
-                        </div>
-                      </button>
+                    {event.description && (
+                      <p className="text-sm text-black/40 leading-relaxed line-clamp-3">
+                        {event.description}
+                      </p>
                     )}
+                  </div>
+                  <div className="flex items-center justify-between mt-6">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-black/30 flex items-center gap-1">
+                        <Clock size={9} /> {event.time} · {weekday} {day} {month}
+                      </span>
+                      {days === 0 && <span className="text-[10px] font-black uppercase tracking-widest text-yellow-500">● Today</span>}
+                      {days === 1 && <span className="text-[10px] font-black uppercase tracking-widest text-yellow-500">● Tomorrow</span>}
+                      {days > 1 && days <= 7 && <span className="text-[10px] font-black uppercase tracking-widest text-black/40">● In {days} days</span>}
+                    </div>
+                    <button
+                      onClick={e => { e.stopPropagation(); event.url && window.open(event.url, '_blank'); }}
+                      className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                      style={{ background: accent.bg }}
+                    >
+                      <ArrowUpRight size={16} style={{ color: accent.text }} />
+                    </button>
                   </div>
                 </div>
               );
-            })()}
 
-            {/* ── RIGHT COLUMN — 3 stacked ── */}
-            <div className="lg:col-span-7 grid grid-cols-1 gap-5">
-              {rest.map(event => {
-                const accent = TYPE_ACCENT[event.type] ?? TYPE_ACCENT['Contest'];
-                const { day, month, weekday } = formatDate(event.date);
-                const days = daysUntil(event.date);
-
-                return (
-                  <div
-                    key={event.id}
-                    className="grid grid-cols-12 gap-0 rounded-[24px] overflow-hidden cursor-pointer group hover:-translate-y-0.5 transition-transform duration-300 bg-white shadow-sm"
-                    style={{ borderLeft: event.highlight ? '3px solid #facc15' : '3px solid transparent' }}
-                    onClick={() => event.url && window.open(event.url, '_blank')}
-                  >
-                    {/* Image */}
-                    <div className="col-span-4 relative overflow-hidden" style={{ minHeight: 148 }}>
-                      <img
-                        src={getImage(event)}
-                        alt={event.title}
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                        <span className="text-sm font-black uppercase tracking-widest text-center px-2 leading-tight text-white">
-                          {event.type}
-                        </span>
-                      </div>
+              const imagePanel = (
+                <div className="relative overflow-hidden" style={{ minHeight: 260 }}>
+                  <img
+                    src={getImage(event)}
+                    alt={event.title}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/20" />
+                  {event.highlight && (
+                    <div className="absolute top-4 left-4">
+                      <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full bg-yellow-400 text-black">
+                        Featured
+                      </span>
                     </div>
-
-                    {/* Content */}
-                    <div className="col-span-8 flex flex-col justify-between p-5">
-                      <div>
-                        <div className="flex items-center gap-2 mb-2 flex-wrap">
-                          <span
-                            className="text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full"
-                            style={{ background: accent.bg, color: accent.text }}
-                          >
-                            {event.type}
-                          </span>
-                          <span className="text-[10px] text-black/30 font-black uppercase tracking-widest flex items-center gap-1">
-                            <Clock size={9} /> {event.time}
-                          </span>
-                          <span className="text-[10px] text-black/25 font-black uppercase tracking-widest">
-                            {day} {month}
-                          </span>
-                        </div>
-                        <h3 className="text-sm font-black uppercase tracking-tight leading-snug text-black group-hover:text-indigo-600 transition-colors mb-2 line-clamp-3">
-                          {event.title}
-                        </h3>
-                      </div>
-
-                      <div className="flex items-center justify-between mt-2">
-                        <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest">
-                          <span className="text-black/70 group-hover:text-black">View</span>
-                          <div className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center group-hover:translate-x-0.5 transition-transform">
-                            <ArrowUpRight size={11} />
-                          </div>
-                        </button>
-                        <div className="text-right">
-                          {days === 0 && <span className="text-[10px] font-black uppercase tracking-widest text-yellow-500">Today</span>}
-                          {days === 1 && <span className="text-[10px] font-black uppercase tracking-widest text-yellow-500">Tomorrow</span>}
-                          {days > 1 && days <= 7 && <span className="text-[10px] font-black uppercase tracking-widest text-black/40">in {days} days</span>}
-                          {days > 7 && <span className="text-[10px] font-black uppercase tracking-widest text-black/25">{weekday} · {day} {month}</span>}
-                        </div>
-                      </div>
-                    </div>
+                  )}
+                  <div className="absolute bottom-4 left-4">
+                    <span
+                      className="text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full"
+                      style={{ background: accent.bg, color: accent.text }}
+                    >
+                      {event.tag || event.type}
+                    </span>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
 
+              return (
+                <div
+                  key={event.id}
+                  className="group grid grid-cols-2 cursor-pointer rounded-[24px] overflow-hidden border border-black/10 hover:border-black/20 hover:shadow-md transition-all duration-300"
+                  onClick={() => event.url && window.open(event.url, '_blank')}
+                >
+                  {imageRight ? (
+                    <>{textPanel}{imagePanel}</>
+                  ) : (
+                    <>{imagePanel}{textPanel}</>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
 

@@ -124,11 +124,10 @@ const ThisWeekInTech: React.FC<{ items: NewsItem[] }> = ({ items }) => {
         {rest.map((item, index) => (
           <article
             key={item.id}
-            className={`group ${
-              index < rest.length - 1
+            className={`group ${index < rest.length - 1
                 ? 'border-b md:border-b-0 md:border-r border-gray-200 pb-8 md:pb-0 md:pr-8'
                 : ''
-            }`}
+              }`}
           >
             <div className="relative overflow-hidden rounded-xl h-44 mb-4">
               <img
@@ -215,11 +214,10 @@ const BlogsTab: React.FC<{ entries: BlogEntry[] }> = ({ entries }) => {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${
-                selectedCategory === cat
+              className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${selectedCategory === cat
                   ? 'bg-black text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
+                }`}
             >
               {cat}
             </button>
@@ -236,9 +234,8 @@ const BlogsTab: React.FC<{ entries: BlogEntry[] }> = ({ entries }) => {
             <div key={category}>
               {/* Category header */}
               <div className="flex items-center gap-3 mb-4 pb-3 border-b border-gray-100">
-                <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full ${
-                  CATEGORY_COLORS[category] || 'bg-gray-100 text-gray-700'
-                }`}>
+                <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full ${CATEGORY_COLORS[category] || 'bg-gray-100 text-gray-700'
+                  }`}>
                   {category}
                 </span>
                 <span className="text-[11px] text-gray-400 font-mono">{blogs.length} {blogs.length === 1 ? 'post' : 'posts'}</span>
@@ -252,34 +249,44 @@ const BlogsTab: React.FC<{ entries: BlogEntry[] }> = ({ entries }) => {
                     href={blog.url || undefined}
                     target={blog.url ? '_blank' : undefined}
                     rel={blog.url ? 'noopener noreferrer' : undefined}
-                    className={`group block py-4 ${
-                      idx < blogs.length - 1 ? 'border-b border-gray-50' : ''
-                    } hover:bg-gray-50 -mx-3 px-3 rounded-lg transition-colors`}
+                    className={`group flex gap-4 py-4 ${idx < blogs.length - 1 ? 'border-b border-gray-50' : ''
+                      } hover:bg-gray-50 -mx-3 px-3 rounded-lg transition-colors`}
                   >
-                    <h4 className="text-[15px] font-semibold leading-snug mb-1 text-gray-900 group-hover:text-indigo-600 transition-colors">
-                      {blog.title}
-                    </h4>
-                    {blog.description && (
-                      <p className="text-sm text-gray-400 leading-relaxed mb-2 line-clamp-1">
-                        {blog.description}
-                      </p>
+                    {blog.imageUrl && (
+                      <div className="flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden">
+                        <img
+                          src={blog.imageUrl}
+                          alt={blog.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </div>
                     )}
-                    <div className="flex items-center gap-3 text-[11px] text-gray-400">
-                      {blog.author && (
-                        <span className="flex items-center gap-1.5">
-                          <span className="w-4 h-4 rounded-full bg-gray-200 flex items-center justify-center text-[8px] font-bold text-gray-500">
-                            {blog.author.charAt(0)}
-                          </span>
-                          {blog.author}
-                        </span>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-[15px] font-semibold leading-snug mb-1 text-gray-900 group-hover:text-indigo-600 transition-colors">
+                        {blog.title}
+                      </h4>
+                      {blog.description && (
+                        <p className="text-sm text-gray-400 leading-relaxed mb-2 line-clamp-1">
+                          {blog.description}
+                        </p>
                       )}
-                      <span className="w-0.5 h-0.5 rounded-full bg-gray-300" />
-                      <span className="flex items-center gap-1">
-                        <Clock size={10} />
-                        {blog.readTime}
-                      </span>
-                      <span className="w-0.5 h-0.5 rounded-full bg-gray-300" />
-                      <span>{blog.date}</span>
+                      <div className="flex items-center gap-3 text-[11px] text-gray-400">
+                        {blog.author && (
+                          <span className="flex items-center gap-1.5">
+                            <span className="w-4 h-4 rounded-full bg-gray-200 flex items-center justify-center text-[8px] font-bold text-gray-500">
+                              {blog.author.charAt(0)}
+                            </span>
+                            {blog.author}
+                          </span>
+                        )}
+                        <span className="w-0.5 h-0.5 rounded-full bg-gray-300" />
+                        <span className="flex items-center gap-1">
+                          <Clock size={10} />
+                          {blog.readTime}
+                        </span>
+                        <span className="w-0.5 h-0.5 rounded-full bg-gray-300" />
+                        <span>{blog.date}</span>
+                      </div>
                     </div>
                   </a>
                 ))}
@@ -296,14 +303,19 @@ const BlogsTab: React.FC<{ entries: BlogEntry[] }> = ({ entries }) => {
               href={blog.url || undefined}
               target={blog.url ? '_blank' : undefined}
               rel={blog.url ? 'noopener noreferrer' : undefined}
-              className={`group flex items-start gap-5 py-5 ${
-                idx < filtered.length - 1 ? 'border-b border-gray-100' : ''
-              } hover:bg-gray-50 -mx-4 px-4 rounded-lg transition-colors`}
+              className={`group flex items-start gap-5 py-5 ${idx < filtered.length - 1 ? 'border-b border-gray-100' : ''
+                } hover:bg-gray-50 -mx-4 px-4 rounded-lg transition-colors`}
             >
-              {/* Number */}
-              <span className="text-3xl font-black text-gray-200 group-hover:text-indigo-200 transition-colors leading-none mt-1 shrink-0 w-8 text-right">
-                {String(idx + 1).padStart(2, '0')}
-              </span>
+              {/* Thumbnail */}
+              {blog.imageUrl && (
+                <div className="flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden">
+                  <img
+                    src={blog.imageUrl}
+                    alt={blog.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+              )}
 
               <div className="flex-1 min-w-0">
                 <h4 className="text-base font-bold leading-snug mb-1 text-gray-900 group-hover:text-indigo-600 transition-colors">
@@ -381,22 +393,20 @@ const ExplorePage: React.FC = () => {
           <div className="inline-flex bg-gray-100 rounded-full p-1">
             <button
               onClick={() => setActiveTab('news')}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold uppercase tracking-wider transition-all ${
-                activeTab === 'news'
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold uppercase tracking-wider transition-all ${activeTab === 'news'
                   ? 'bg-black text-white shadow-lg'
                   : 'text-gray-500 hover:text-black'
-              }`}
+                }`}
             >
               <Newspaper size={16} />
               This Week in Tech
             </button>
             <button
               onClick={() => setActiveTab('blogs')}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold uppercase tracking-wider transition-all ${
-                activeTab === 'blogs'
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold uppercase tracking-wider transition-all ${activeTab === 'blogs'
                   ? 'bg-black text-white shadow-lg'
                   : 'text-gray-500 hover:text-black'
-              }`}
+                }`}
             >
               <BookOpen size={16} />
               Blogs
