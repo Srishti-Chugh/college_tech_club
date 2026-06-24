@@ -61,10 +61,19 @@ const StackModal: React.FC<Props> = ({ stack, onClose }) => {
                     </div>
                     <div className="dev-projects-list">
                         {stack.projects.map(p => (
-                            <div key={p.name} className="dev-project-row">
+                            <a
+                                key={p.name}
+                                href={`https://github.com/search?q=${encodeURIComponent(p.name)}&type=repositories`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="dev-project-row dev-project-row--link"
+                            >
                                 <span className="dev-project-name">{p.name}</span>
-                                <span className="dev-project-level">{p.level}</span>
-                            </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <span className="dev-project-level">{p.level}</span>
+                                    <ExternalLink size={11} style={{ color: 'rgba(255,255,255,0.3)' }} />
+                                </div>
+                            </a>
                         ))}
                     </div>
 

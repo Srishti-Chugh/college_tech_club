@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 
 // ─── Public types ──────────────────────────────────────────────────────────────
 export interface MindMapNode {
@@ -8,78 +8,79 @@ export interface MindMapNode {
 }
 
 interface MindMapProps {
-    nodes: MindMapNode[];   // top-level branch nodes
+    nodes: MindMapNode[];
     rootLabel?: string;
 }
 
-// ─── Colour ramps — tuned for dark modal background ───────────────────────────
-// Each ramp: [branchFill, branchText, leafFill, leafText, line]
+// ─── Colour ramps [branchFill, branchText, leafFill, leafText, line] ──────────
 const RAMPS: [string, string, string, string, string][] = [
-    ['#4c6ef5', '#fff', 'rgba(76,110,245,0.22)', 'rgba(180,196,255,0.9)', '#4c6ef5'],  // indigo
-    ['#20c997', '#04342c', 'rgba(32,201,151,0.20)', 'rgba(160,235,210,0.9)', '#20c997'],  // teal
-    ['#cc5de8', '#fff', 'rgba(204,93,232,0.20)', 'rgba(220,170,240,0.9)', '#cc5de8'],  // purple
-    ['#ff922b', '#2e1400', 'rgba(255,146,43,0.20)', 'rgba(255,200,150,0.9)', '#ff922b'],  // orange
-    ['#51cf66', '#0a2e0f', 'rgba(81,207,102,0.20)', 'rgba(160,230,170,0.9)', '#51cf66'],  // green
-    ['#ff6b6b', '#fff', 'rgba(255,107,107,0.20)', 'rgba(255,180,180,0.9)', '#ff6b6b'],  // red
+    ['#4c6ef5', '#fff', 'rgba(76,110,245,0.22)', 'rgba(180,196,255,0.9)', '#4c6ef5'],
+    ['#20c997', '#04342c', 'rgba(32,201,151,0.20)', 'rgba(160,235,210,0.9)', '#20c997'],
+    ['#cc5de8', '#fff', 'rgba(204,93,232,0.20)', 'rgba(220,170,240,0.9)', '#cc5de8'],
+    ['#ff922b', '#2e1400', 'rgba(255,146,43,0.20)', 'rgba(255,200,150,0.9)', '#ff922b'],
+    ['#51cf66', '#0a2e0f', 'rgba(81,207,102,0.20)', 'rgba(160,230,170,0.9)', '#51cf66'],
+    ['#ff6b6b', '#fff', 'rgba(255,107,107,0.20)', 'rgba(255,180,180,0.9)', '#ff6b6b'],
 ];
 
-// ─── Layout constants (px in viewBox space) ────────────────────────────────────
-const VW = 900;   // viewBox width
-const VH_BASE = 560;   // base viewBox height (will grow)
+// ─── Layout constants ──────────────────────────────────────────────────────────
+const REACH_L1 = 200;   // root-centre → L1-centre
+const REACH_L2 = 175;   // L1-centre → L2-centre
+const REACH_L3 = 160;   // L2-centre → L3-centre
+
+const ROOT_W = 190; const ROOT_H = 48; const ROOT_RX = 26;
+const L1_W = 130; const L1_H = 36; const L1_RX = 18;
+const L2_W = 122; const L2_H = 30; const L2_RX = 15;
+const L3_W = 112; const L3_H = 26; const L3_RX = 13;
+
+// Total horizontal reach from centre to far edge of L3 pill
+const HALF_W = REACH_L1 + REACH_L2 + REACH_L3 + L3_W / 2 + 24; // 24px padding
+const VW = HALF_W * 2;  // symmetric left + right
+const VH_BASE = 560;
 const CX = VW / 2;
 
-const ROOT_RX = 26;    // root pill border-radius
-const ROOT_W = 190;
-const ROOT_H = 48;
+const L1_MIN_GAP = 22;  // minimum vertical padding around an L1 node
+const L3_GAP = 32;      // vertical gap between sibling L3 leaf nodes
 
-const L1_W = 138;   // branch node pill width
-const L1_H = 38;
-const L1_RX = 19;
-
-const L2_W = 118;   // leaf node pill width
-const L2_H = 30;
-const L2_RX = 15;
-
-// Horizontal reach from centre → L1 centre (right side)
-const REACH_L1 = 215;
-// Horizontal reach from L1 centre → L2 centre
-const REACH_L2 = 180;
-
-// Min vertical gap between L1 branch centres
-const L1_MIN_GAP = 100;
-// Vertical gap between consecutive leaf centres within a branch
-const L2_GAP = 38;
-
-// ─── Organic cubic bezier between two points ────────────────────────────────────
-function curve(x1: number, y1: number, x2: number, y2: number): string {
+// ─── Bezier curve helper ───────────────────────────────────────────────────────
+function curve(x1: number, y1: number, x2: number, y2: number) {
     const mx = (x1 + x2) / 2;
     return `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`;
 }
 
-// ─── Measure how much vertical space a branch occupies ────────────────────────
-function branchSpan(b: MindMapNode, isOpen: boolean): number {
-    const leafCount = isOpen && b.children ? b.children.length : 0;
-    if (leafCount <= 1) return L1_MIN_GAP;
-    return Math.max(L1_MIN_GAP, leafCount * L2_GAP);
+// ─── Height calculation — fully recursive ─────────────────────────────────────
+// Returns the pixel height that a node's subtree occupies when expanded.
+function subtreeHeight(node: MindMapNode, depth: number, collapsedL1: Set<string>, collapsedL2: Set<string>): number {
+    const key = node.label;
+    if (!node.children?.length) return L3_GAP; // leaf
+
+    if (depth === 1) {
+        // L1 branch: check if collapsed
+        if (collapsedL1.has(key)) return L1_MIN_GAP * 2;
+        const childH = node.children.reduce((s, c) => s + subtreeHeight(c, 2, collapsedL1, collapsedL2), 0);
+        return Math.max(L1_MIN_GAP * 2, childH);
+    }
+    if (depth === 2) {
+        // L2 mid-node: check if collapsed
+        if (collapsedL2.has(key)) return L3_GAP;
+        const childH = node.children.length * L3_GAP;
+        return Math.max(L3_GAP, childH);
+    }
+    return L3_GAP;
 }
 
 // ─── Pill component ────────────────────────────────────────────────────────────
 interface PillProps {
     cx: number; cy: number; w: number; h: number; rx: number;
     label: string; fill: string; textFill: string;
-    hasChildren: boolean; isOpen: boolean;
-    url?: string;
+    hasChildren: boolean; isOpen: boolean; url?: string;
     onClick: () => void;
 }
 
-const Pill: React.FC<PillProps> = ({
-    cx, cy, w, h, rx, label, fill, textFill,
-    hasChildren, isOpen, url, onClick,
-}) => {
+const Pill: React.FC<PillProps> = ({ cx, cy, w, h, rx, label, fill, textFill, hasChildren, isOpen, url, onClick }) => {
     const [hov, setHov] = useState(false);
     const interactive = hasChildren || !!url;
-    // Truncate label to fit pill
-    const short = label.length > 17 ? label.slice(0, 16) + '…' : label;
+    const maxChars = Math.floor(w / 7);
+    const short = label.length > maxChars ? label.slice(0, maxChars - 1) + '…' : label;
 
     return (
         <g
@@ -89,29 +90,25 @@ const Pill: React.FC<PillProps> = ({
             style={{ cursor: interactive ? 'pointer' : 'default' }}
         >
             <rect
-                x={cx - w / 2} y={cy - h / 2}
-                width={w} height={h} rx={rx}
+                x={cx - w / 2} y={cy - h / 2} width={w} height={h} rx={rx}
                 fill={fill}
-                opacity={hov ? 0.82 : 1}
-                stroke={hov ? 'rgba(0,0,0,0.18)' : 'none'}
+                opacity={hov ? 0.78 : 1}
+                stroke={hov ? (url ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.18)') : 'none'}
                 strokeWidth={1.5}
             />
-            {/* Small collapse indicator */}
+            {/* collapse dot for branch nodes */}
             {hasChildren && (
-                <circle
-                    cx={cx + w / 2 - 10} cy={cy}
-                    r={3.5}
-                    fill={isOpen ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.3)'}
-                />
+                <circle cx={cx + w / 2 - 9} cy={cy} r={3}
+                    fill={isOpen ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.25)'} />
             )}
-            {/* External link dot for leaf URLs */}
+            {/* link dot for leaf nodes */}
             {!hasChildren && url && (
-                <circle cx={cx + w / 2 - 9} cy={cy} r={2.5} fill="rgba(255,255,255,0.45)" />
+                <circle cx={cx + w / 2 - 8} cy={cy} r={2.5} fill="rgba(255,255,255,0.55)" />
             )}
             <text
-                x={cx - (hasChildren || url ? 4 : 0)} y={cy}
+                x={cx - (hasChildren || url ? 3 : 0)} y={cy}
                 textAnchor="middle" dominantBaseline="central"
-                fill={textFill} fontSize={12.5} fontWeight={500}
+                fill={textFill} fontSize={11.5} fontWeight={500}
                 fontFamily="system-ui, -apple-system, sans-serif"
                 style={{ userSelect: 'none', pointerEvents: 'none' }}
             >
@@ -123,110 +120,127 @@ const Pill: React.FC<PillProps> = ({
 
 // ─── Main component ────────────────────────────────────────────────────────────
 const MindMap: React.FC<MindMapProps> = ({ nodes, rootLabel = 'Stack' }) => {
-    // Which branch indices are collapsed
-    const [collapsed, setCollapsed] = useState<Set<number>>(new Set());
+    const [collapsedL1, setCollapsedL1] = useState<Set<string>>(new Set());
+    const [collapsedL2, setCollapsedL2] = useState<Set<string>>(new Set());
 
-    const toggle = useCallback((idx: number) => {
-        setCollapsed(prev => {
-            const next = new Set(prev);
-            next.has(idx) ? next.delete(idx) : next.add(idx);
-            return next;
-        });
-    }, []);
+    const toggleL1 = useCallback((label: string) => setCollapsedL1(prev => {
+        const n = new Set(prev); n.has(label) ? n.delete(label) : n.add(label); return n;
+    }), []);
 
-    const expandAll = () => setCollapsed(new Set());
-    const collapseAll = () => setCollapsed(new Set(nodes.map((_, i) => i)));
+    const toggleL2 = useCallback((label: string) => setCollapsedL2(prev => {
+        const n = new Set(prev); n.has(label) ? n.delete(label) : n.add(label); return n;
+    }), []);
 
-    // ── Layout: split branches left / right ─────────────────────────────────────
+    const expandAll = () => { setCollapsedL1(new Set()); setCollapsedL2(new Set()); };
+    const collapseAll = () => {
+        setCollapsedL1(new Set(nodes.map(n => n.label)));
+        setCollapsedL2(new Set(nodes.flatMap(n => n.children?.map(c => c.label) ?? [])));
+    };
+
+    // ── Layout: split L1 branches left / right ──────────────────────────────────
     const half = Math.ceil(nodes.length / 2);
     const rBranches = nodes.slice(0, half);
     const lBranches = nodes.slice(half);
 
-    // Compute total height for a list of branches
-    const totalSpan = (branches: MindMapNode[], startIdx: number) =>
-        branches.reduce((s, b, i) => s + branchSpan(b, !collapsed.has(startIdx + i)), 0);
+    const sideSpan = (branches: MindMapNode[]) =>
+        branches.reduce((s, b) => s + subtreeHeight(b, 1, collapsedL1, collapsedL2), 0);
 
-    const rSpan = totalSpan(rBranches, 0);
-    const lSpan = totalSpan(lBranches, half);
-    const sideH = Math.max(rSpan, lSpan, 300);
-    const VH = Math.max(VH_BASE, sideH + 160);
+    const rSpan = sideSpan(rBranches);
+    const lSpan = sideSpan(lBranches);
+    const VH = Math.max(VH_BASE, Math.max(rSpan, lSpan) + 120);
     const CY = VH / 2;
 
     // ── Render one side ──────────────────────────────────────────────────────────
     type El = React.ReactElement;
-    type Rendered = { lines: El[]; pills: El[] };
 
-    const renderSide = (
-        branches: MindMapNode[],
-        side: 'L' | 'R',
-        startIdx: number,
-    ): Rendered => {
+    const renderSide = (branches: MindMapNode[], side: 'L' | 'R', startColorIdx: number) => {
         const lines: El[] = [];
         const pills: El[] = [];
-        const totalH = totalSpan(branches, startIdx);
+
+        const totalH = sideSpan(branches);
         let curY = CY - totalH / 2;
 
-        branches.forEach((b, bi) => {
-            const idx = startIdx + bi;
-            const isOpen = !collapsed.has(idx);
-            const span = branchSpan(b, isOpen);
-            const bcy = curY + span / 2;
-            curY += span;
+        branches.forEach((l1node, bi) => {
+            const colorIdx = (startColorIdx + bi) % RAMPS.length;
+            const [bFill, bText, lFill, lText, lineClr] = RAMPS[colorIdx];
+            const l1H = subtreeHeight(l1node, 1, collapsedL1, collapsedL2);
+            const l1cy = curY + l1H / 2;
+            curY += l1H;
 
-            const [bFill, bText, lFill, lText, lineClr] = RAMPS[idx % RAMPS.length];
-
-            // L1 position
             const l1cx = side === 'R' ? CX + REACH_L1 : CX - REACH_L1;
-
-            // Root edge → L1 edge
             const rootEdgeX = side === 'R' ? CX + ROOT_W / 2 : CX - ROOT_W / 2;
             const l1EdgeX = side === 'R' ? l1cx - L1_W / 2 : l1cx + L1_W / 2;
 
-            lines.push(
-                <path key={`rl1-${idx}`}
-                    d={curve(rootEdgeX, CY, l1EdgeX, bcy)}
-                    fill="none" stroke={lineClr} strokeWidth={2} opacity={0.7} />
-            );
+            // root → L1 line
+            lines.push(<path key={`r-l1-${bi}`} d={curve(rootEdgeX, CY, l1EdgeX, l1cy)}
+                fill="none" stroke={lineClr} strokeWidth={2} opacity={0.65} />);
 
+            const l1Open = !collapsedL1.has(l1node.label);
             pills.push(
-                <Pill key={`l1-${idx}`}
-                    cx={l1cx} cy={bcy} w={L1_W} h={L1_H} rx={L1_RX}
-                    label={b.label} fill={bFill} textFill={bText}
-                    hasChildren={!!b.children?.length} isOpen={isOpen}
-                    url={b.url}
-                    onClick={() => b.children?.length ? toggle(idx) : b.url && window.open(b.url, '_blank', 'noopener')}
+                <Pill key={`l1-${bi}`} cx={l1cx} cy={l1cy} w={L1_W} h={L1_H} rx={L1_RX}
+                    label={l1node.label} fill={bFill} textFill={bText}
+                    hasChildren={!!l1node.children?.length} isOpen={l1Open} url={l1node.url}
+                    onClick={() => l1node.children?.length ? toggleL1(l1node.label) : l1node.url && window.open(l1node.url, '_blank', 'noopener')}
                 />
             );
 
-            // Leaves
-            if (isOpen && b.children?.length) {
-                const leafCount = b.children.length;
-                const leafTotalH = leafCount * L2_GAP;
-                const leafStartY = bcy - leafTotalH / 2 + L2_GAP / 2;
+            if (!l1Open || !l1node.children?.length) return;
 
-                b.children.forEach((leaf, li) => {
-                    const lcy = leafStartY + li * L2_GAP;
-                    const l2cx = side === 'R' ? l1cx + REACH_L2 : l1cx - REACH_L2;
-                    const l1OutX = side === 'R' ? l1cx + L1_W / 2 : l1cx - L1_W / 2;
-                    const l2InX = side === 'R' ? l2cx - L2_W / 2 : l2cx + L2_W / 2;
+            // ── L2 nodes ────────────────────────────────────────────────────────
+            const l2TotalH = l1node.children.reduce((s, c) => s + subtreeHeight(c, 2, collapsedL1, collapsedL2), 0);
+            let l2CurY = l1cy - l2TotalH / 2;
 
-                    lines.push(
-                        <path key={`l2line-${idx}-${li}`}
-                            d={curve(l1OutX, bcy, l2InX, lcy)}
-                            fill="none" stroke={lineClr} strokeWidth={1.4} opacity={0.5} />
-                    );
+            l1node.children.forEach((l2node, l2i) => {
+                const l2H = subtreeHeight(l2node, 2, collapsedL1, collapsedL2);
+                const l2cy = l2CurY + l2H / 2;
+                l2CurY += l2H;
 
+                const l2cx = side === 'R' ? l1cx + REACH_L2 : l1cx - REACH_L2;
+                const l1OutX = side === 'R' ? l1cx + L1_W / 2 : l1cx - L1_W / 2;
+                const l2InX = side === 'R' ? l2cx - L2_W / 2 : l2cx + L2_W / 2;
+
+                // L1 → L2 line
+                lines.push(<path key={`l1-l2-${bi}-${l2i}`} d={curve(l1OutX, l1cy, l2InX, l2cy)}
+                    fill="none" stroke={lineClr} strokeWidth={1.4} opacity={0.45} />);
+
+                const l2HasChildren = !!l2node.children?.length;
+                const l2Open = !collapsedL2.has(l2node.label);
+
+                pills.push(
+                    <Pill key={`l2-${bi}-${l2i}`} cx={l2cx} cy={l2cy} w={L2_W} h={L2_H} rx={L2_RX}
+                        label={l2node.label} fill={lFill} textFill={lText}
+                        hasChildren={l2HasChildren} isOpen={l2Open} url={l2node.url}
+                        onClick={() => l2HasChildren ? toggleL2(l2node.label) : l2node.url && window.open(l2node.url, '_blank', 'noopener')}
+                    />
+                );
+
+                if (!l2Open || !l2node.children?.length) return;
+
+                // ── L3 leaf nodes ──────────────────────────────────────────────
+                const l3Count = l2node.children.length;
+                const l3TotalH = l3Count * L3_GAP;
+                const l3StartY = l2cy - l3TotalH / 2 + L3_GAP / 2;
+
+                l2node.children.forEach((l3node, l3i) => {
+                    const l3cy = l3StartY + l3i * L3_GAP;
+                    const l3cx = side === 'R' ? l2cx + REACH_L3 : l2cx - REACH_L3;
+                    const l2OutX = side === 'R' ? l2cx + L2_W / 2 : l2cx - L2_W / 2;
+                    const l3InX = side === 'R' ? l3cx - L3_W / 2 : l3cx + L3_W / 2;
+
+                    // L2 → L3 line
+                    lines.push(<path key={`l2-l3-${bi}-${l2i}-${l3i}`} d={curve(l2OutX, l2cy, l3InX, l3cy)}
+                        fill="none" stroke={lineClr} strokeWidth={1} opacity={0.35} />);
+
+                    // L3 leaf — always has a url, always clickable
                     pills.push(
-                        <Pill key={`l2-${idx}-${li}`}
-                            cx={l2cx} cy={lcy} w={L2_W} h={L2_H} rx={L2_RX}
-                            label={leaf.label} fill={lFill} textFill={lText}
-                            hasChildren={false} isOpen={false}
-                            url={leaf.url}
-                            onClick={() => leaf.url && window.open(leaf.url, '_blank', 'noopener')}
+                        <Pill key={`l3-${bi}-${l2i}-${l3i}`} cx={l3cx} cy={l3cy} w={L3_W} h={L3_H} rx={L3_RX}
+                            label={l3node.label} fill={lFill} textFill={lText}
+                            hasChildren={false} isOpen={false} url={l3node.url}
+                            onClick={() => l3node.url && window.open(l3node.url, '_blank', 'noopener')}
                         />
                     );
                 });
-            }
+            });
         });
 
         return { lines, pills };
@@ -235,39 +249,22 @@ const MindMap: React.FC<MindMapProps> = ({ nodes, rootLabel = 'Stack' }) => {
     const right = renderSide(rBranches, 'R', 0);
     const left = renderSide(lBranches, 'L', half);
 
-    // ── Root label shortened ────────────────────────────────────────────────────
     const rootShort = rootLabel.length > 15 ? rootLabel.slice(0, 14) + '…' : rootLabel;
-
-    // ── Root circle label font size based on length ─────────────────────────────
-    const rootFontSize = rootLabel.length > 10 ? 13 : 14.5;
 
     return (
         <div style={{ width: '100%' }}>
-            {/* Controls */}
             <div style={{ display: 'flex', gap: 6, marginBottom: 10, justifyContent: 'flex-end' }}>
                 <button className="dev-mm-ctrl-btn" onClick={expandAll}>Expand all</button>
                 <button className="dev-mm-ctrl-btn" onClick={collapseAll}>Collapse all</button>
             </div>
-
-            {/* Hint */}
-            <p style={{
-                fontFamily: "'Fira Code', monospace",
-                fontSize: '0.7rem',
-                color: 'rgba(255,255,255,0.3)',
-                marginBottom: '0.6rem',
-            }}>
-                Click a branch to collapse · Click a leaf to open the resource
+            <p style={{ fontFamily: "'Fira Code', monospace", fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)', marginBottom: '0.6rem' }}>
+                Click a branch/mid-node to expand · Click a <span style={{ color: 'rgba(255,255,255,0.55)' }}>●leaf</span> to open the resource
             </p>
-
-            {/* Scrollable SVG */}
-            <div style={{ overflowX: 'auto', borderRadius: 14 }}>
-                <svg
-                    viewBox={`0 0 ${VW} ${VH}`}
-                    width={VW} height={VH}
+            <div style={{ overflowX: 'auto', borderRadius: 14, width: '100%' }}>
+                <svg viewBox={`0 0 ${VW} ${VH}`} width={VW} height={VH}
                     xmlns="http://www.w3.org/2000/svg"
                     style={{ display: 'block', minWidth: VW, borderRadius: 12 }}
                 >
-                    {/* Soft dot grid — matches reference */}
                     <defs>
                         <pattern id="dotgrid" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
                             <circle cx="14" cy="14" r="0.9" fill="rgba(255,255,255,0.06)" />
@@ -275,33 +272,20 @@ const MindMap: React.FC<MindMapProps> = ({ nodes, rootLabel = 'Stack' }) => {
                     </defs>
                     <rect width={VW} height={VH} fill="url(#dotgrid)" rx={12} />
 
-                    {/* Lines first */}
-                    {right.lines}
-                    {left.lines}
+                    {right.lines}{left.lines}
 
                     {/* Root node */}
                     <g>
-                        <rect
-                            x={CX - ROOT_W / 2} y={CY - ROOT_H / 2}
-                            width={ROOT_W} height={ROOT_H} rx={ROOT_RX}
-                            fill="rgba(255,255,255,0.10)"
-                            stroke="rgba(250,204,21,0.5)"
-                            strokeWidth={1.5}
-                        />
-                        <text
-                            x={CX} y={CY}
-                            textAnchor="middle" dominantBaseline="central"
-                            fill="#facc15" fontSize={rootFontSize} fontWeight={600}
-                            fontFamily="'Outfit', system-ui, sans-serif"
-                            style={{ userSelect: 'none' }}
-                        >
+                        <rect x={CX - ROOT_W / 2} y={CY - ROOT_H / 2} width={ROOT_W} height={ROOT_H} rx={ROOT_RX}
+                            fill="rgba(255,255,255,0.10)" stroke="rgba(250,204,21,0.5)" strokeWidth={1.5} />
+                        <text x={CX} y={CY} textAnchor="middle" dominantBaseline="central"
+                            fill="#facc15" fontSize={rootLabel.length > 10 ? 12 : 14} fontWeight={600}
+                            fontFamily="'Outfit', system-ui, sans-serif" style={{ userSelect: 'none' }}>
                             {rootShort}
                         </text>
                     </g>
 
-                    {/* Pills on top */}
-                    {right.pills}
-                    {left.pills}
+                    {right.pills}{left.pills}
                 </svg>
             </div>
         </div>

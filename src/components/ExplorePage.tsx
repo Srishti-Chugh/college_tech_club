@@ -230,7 +230,7 @@ const BlogsTab: React.FC<{ entries: BlogEntry[] }> = ({ entries }) => {
       {selectedCategory === 'All' ? (
         /* Grouped by category — two-column layout */
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-10 mt-8">
-          {Object.entries(grouped).map(([category, blogs]) => (
+          {(Object.entries(grouped) as [string, BlogEntry[]][]).map(([category, blogs]) => (
             <div key={category}>
               {/* Category header */}
               <div className="flex items-center gap-3 mb-4 pb-3 border-b border-gray-100">
